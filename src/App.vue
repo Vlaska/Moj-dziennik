@@ -56,16 +56,10 @@
     <v-app-bar app="" color="indigo darken-1" dark>
       <div class="d-flex align-center">
         <h2>
-          <!-- <a href="/" style="color: inherit; text-decoration: inherit"
-            >Mój Dziennik</a
-          > -->
           <router-link to="/" style="color: inherit; text-decoration: inherit"
             >Mój Dziennik</router-link
           >
         </h2>
-        <!-- <div v-if="path.length" style="padding-left: 12px; margin-right: -12px">
-          <v-icon>mdi-chevron-right</v-icon>
-        </div> -->
         <v-breadcrumbs divider="/" :items="path">
           <template v-slot:item="{ item }">
             <v-breadcrumbs-item :href="item.href" :disabled="item.disabled">
@@ -78,11 +72,8 @@
         </v-breadcrumbs>
       </div>
       <v-spacer></v-spacer>
-      <!-- <v-btn flat="" href="/login" v-if="!user_logged" color="info"
-        >Zaloguj</v-btn -->
-      <!-- > -->
       <router-link to="/login" v-if="!user_logged">
-        <v-btn flat="">Zaloguj</v-btn>
+        <v-btn>Zaloguj</v-btn>
       </router-link>
       <div class="d-flex align-center" v-else><span>Witaj</span></div>
     </v-app-bar>
@@ -105,16 +96,16 @@ export default {
   data: () => ({
     //
     path: [
-      {
-        text: "<h2>Mój dziennik</h2>",
-        disbled: false,
-        href: "#"
-      },
-      {
-        text: "<h2>Mój dziennik</h2>",
-        disbled: false,
-        href: "#"
-      }
+      // {
+      //   text: "<h2>Mój dziennik</h2>",
+      //   disbled: false,
+      //   href: "#"
+      // },
+      // {
+      //   text: "<h2>Mój dziennik</h2>",
+      //   disbled: false,
+      //   href: "#"
+      // }
     ],
     user_logged: false
   })

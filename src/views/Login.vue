@@ -1,5 +1,8 @@
 <template>
-  <login></login>
+  <div>
+    <h1 class="text-center mt-6">Logowanie</h1>
+    <login></login>
+  </div>
 </template>
 
 <script>
