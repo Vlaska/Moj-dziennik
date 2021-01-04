@@ -20,7 +20,7 @@
 <script>
 export default {
   props: {
-    pages: Object
+    pages: Array
   }
 };
 </script>

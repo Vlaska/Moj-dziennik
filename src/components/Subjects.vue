@@ -12,21 +12,33 @@
           v-bind:class="idx !== 0 ? 'mt-10' : 'mt-2'"
         >
           <h2 class="text--primary mb-5 ml-n7">{{ sub.name }}</h2>
-          <v-row v-for="i in sub.classes" v-bind:key="i.key" class="my-auto d-flex flex-column pb-4">
+          <v-row
+            v-for="i in sub.classes"
+            v-bind:key="i.key"
+            class="my-auto d-flex flex-column pb-4"
+          >
             <div class="d-flex align-center" style="max-width: 150px">
               Klasa {{ i.idx }}
             </div>
             <div class="d-flex flex-row class-ids" style="flex-wrap: wrap">
-              <v-btn
+              <router-link
                 v-for="j in i.names"
                 v-bind:key="j"
-                class="px-0 ma-2"
-                rounded
-                style="min-width: 36px"
-                color="indigo lighten-5"
+                :to="{
+                  name: 'classPage',
+                  params: { class_name: i.idx.length + j, subject: sub.code }
+                }"
+                style="text-decoration: none"
               >
-                {{ j | lower }}
-              </v-btn>
+                <v-btn
+                  class="px-0 ma-2"
+                  rounded
+                  style="min-width: 36px"
+                  color="indigo lighten-5"
+                >
+                  {{ j }}
+                </v-btn>
+              </router-link>
             </div>
           </v-row>
         </v-row>
@@ -43,6 +55,7 @@ export default {
     subjects: [
       {
         name: "Język Polski",
+        code: "jpolski",
         key: 1,
         classes: [
           {
@@ -59,6 +72,7 @@ export default {
       },
       {
         name: "Informatyka",
+        code: "informatyka",
         key: 2,
         classes: [
           {

@@ -1,6 +1,7 @@
 <template>
   <v-container>
-    <v-form class="d-flex justify-center" @submit.prevent>
+      
+    <!-- <v-form class="d-flex justify-center" @submit.prevent>
       <v-col cols="12" sm="8">
         <v-row>
           <v-text-field label="Wiadomość do"></v-text-field>
@@ -13,7 +14,7 @@
           <v-btn color="primary">Wyślij wiadomość</v-btn></v-row
         >
       </v-col>
-    </v-form>
+    </v-form> -->
   </v-container>
 </template>
 

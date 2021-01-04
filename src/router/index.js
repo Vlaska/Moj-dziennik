@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import MainPage from "../views/MainPage.vue";
+import ClassPage from "../views/ClassPage.vue";
 
 Vue.use(VueRouter);
 
@@ -21,6 +22,11 @@ const routes = [
     path: "/main",
     name: "mainPage",
     component: MainPage
+  },
+  {
+    path: "/class/:class_name/:subject",
+    name: "classPage",
+    component: ClassPage
   }
 ];
 
