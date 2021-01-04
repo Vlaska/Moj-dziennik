@@ -1,0 +1,507 @@
+[
+    {
+        "name": "Kartk\u00f3wka 1",
+        "grades": [
+            {
+                "student": 1,
+                "grade": "5+"
+            },
+            {
+                "student": 2,
+                "grade": "3+"
+            },
+            {
+                "student": 3,
+                "grade": "3+"
+            },
+            {
+                "student": 4,
+                "grade": "5-"
+            },
+            {
+                "student": 5,
+                "grade": null
+            },
+            {
+                "student": 6,
+                "grade": null
+            },
+            {
+                "student": 7,
+                "grade": "3+"
+            },
+            {
+                "student": 8,
+                "grade": "3+"
+            },
+            {
+                "student": 9,
+                "grade": null
+            },
+            {
+                "student": 10,
+                "grade": "2="
+            },
+            {
+                "student": 11,
+                "grade": "5-"
+            },
+            {
+                "student": 12,
+                "grade": "5-"
+            },
+            {
+                "student": 13,
+                "grade": null
+            },
+            {
+                "student": 14,
+                "grade": "3+"
+            },
+            {
+                "student": 15,
+                "grade": "2="
+            },
+            {
+                "student": 16,
+                "grade": "2+"
+            },
+            {
+                "student": 17,
+                "grade": "5="
+            },
+            {
+                "student": 18,
+                "grade": "4="
+            },
+            {
+                "student": 19,
+                "grade": "4+"
+            },
+            {
+                "student": 20,
+                "grade": "4+"
+            },
+            {
+                "student": 21,
+                "grade": "4+"
+            },
+            {
+                "student": 22,
+                "grade": null
+            },
+            {
+                "student": 23,
+                "grade": "6"
+            },
+            {
+                "student": 24,
+                "grade": null
+            }
+        ]
+    },
+    {
+        "name": "Kartk\u00f3wka 2",
+        "grades": [
+            {
+                "student": 1,
+                "grade": "5="
+            },
+            {
+                "student": 2,
+                "grade": "3="
+            },
+            {
+                "student": 3,
+                "grade": "6"
+            },
+            {
+                "student": 4,
+                "grade": "2="
+            },
+            {
+                "student": 5,
+                "grade": "1"
+            },
+            {
+                "student": 6,
+                "grade": "4-"
+            },
+            {
+                "student": 7,
+                "grade": "3="
+            },
+            {
+                "student": 8,
+                "grade": "1"
+            },
+            {
+                "student": 9,
+                "grade": "2-"
+            },
+            {
+                "student": 10,
+                "grade": "5+"
+            },
+            {
+                "student": 11,
+                "grade": "3+"
+            },
+            {
+                "student": 12,
+                "grade": null
+            },
+            {
+                "student": 13,
+                "grade": "2+"
+            },
+            {
+                "student": 14,
+                "grade": "5+"
+            },
+            {
+                "student": 15,
+                "grade": "2-"
+            },
+            {
+                "student": 16,
+                "grade": null
+            },
+            {
+                "student": 17,
+                "grade": "4-"
+            },
+            {
+                "student": 18,
+                "grade": "5+"
+            },
+            {
+                "student": 19,
+                "grade": "3+"
+            },
+            {
+                "student": 20,
+                "grade": "5="
+            },
+            {
+                "student": 21,
+                "grade": "2+"
+            },
+            {
+                "student": 22,
+                "grade": "6"
+            },
+            {
+                "student": 23,
+                "grade": "2="
+            },
+            {
+                "student": 24,
+                "grade": null
+            }
+        ]
+    },
+    {
+        "name": "Odpowied\u017a ustna 1",
+        "grades": [
+            {
+                "student": 1,
+                "grade": "3+"
+            },
+            {
+                "student": 2,
+                "grade": "5+"
+            },
+            {
+                "student": 3,
+                "grade": "3="
+            },
+            {
+                "student": 4,
+                "grade": "4+"
+            },
+            {
+                "student": 5,
+                "grade": "5+"
+            },
+            {
+                "student": 6,
+                "grade": "4="
+            },
+            {
+                "student": 7,
+                "grade": "6"
+            },
+            {
+                "student": 8,
+                "grade": "5-"
+            },
+            {
+                "student": 9,
+                "grade": "3+"
+            },
+            {
+                "student": 10,
+                "grade": "5="
+            },
+            {
+                "student": 11,
+                "grade": "5="
+            },
+            {
+                "student": 12,
+                "grade": "5-"
+            },
+            {
+                "student": 13,
+                "grade": "4-"
+            },
+            {
+                "student": 14,
+                "grade": "2+"
+            },
+            {
+                "student": 15,
+                "grade": "3="
+            },
+            {
+                "student": 16,
+                "grade": "3+"
+            },
+            {
+                "student": 17,
+                "grade": "6"
+            },
+            {
+                "student": 18,
+                "grade": "3+"
+            },
+            {
+                "student": 19,
+                "grade": "4-"
+            },
+            {
+                "student": 20,
+                "grade": "2-"
+            },
+            {
+                "student": 21,
+                "grade": "3-"
+            },
+            {
+                "student": 22,
+                "grade": "1"
+            },
+            {
+                "student": 23,
+                "grade": "3="
+            },
+            {
+                "student": 24,
+                "grade": "2+"
+            }
+        ]
+    },
+    {
+        "name": "Praca domowa 1",
+        "grades": [
+            {
+                "student": 1,
+                "grade": "5-"
+            },
+            {
+                "student": 2,
+                "grade": "1"
+            },
+            {
+                "student": 3,
+                "grade": "4-"
+            },
+            {
+                "student": 4,
+                "grade": "3-"
+            },
+            {
+                "student": 5,
+                "grade": "4+"
+            },
+            {
+                "student": 6,
+                "grade": "5+"
+            },
+            {
+                "student": 7,
+                "grade": "3-"
+            },
+            {
+                "student": 8,
+                "grade": "4+"
+            },
+            {
+                "student": 9,
+                "grade": "5="
+            },
+            {
+                "student": 10,
+                "grade": "3="
+            },
+            {
+                "student": 11,
+                "grade": "3="
+            },
+            {
+                "student": 12,
+                "grade": "3+"
+            },
+            {
+                "student": 13,
+                "grade": "1"
+            },
+            {
+                "student": 14,
+                "grade": "4="
+            },
+            {
+                "student": 15,
+                "grade": "5-"
+            },
+            {
+                "student": 16,
+                "grade": "3+"
+            },
+            {
+                "student": 17,
+                "grade": "2+"
+            },
+            {
+                "student": 18,
+                "grade": "3="
+            },
+            {
+                "student": 19,
+                "grade": "3-"
+            },
+            {
+                "student": 20,
+                "grade": "3-"
+            },
+            {
+                "student": 21,
+                "grade": "2-"
+            },
+            {
+                "student": 22,
+                "grade": "1"
+            },
+            {
+                "student": 23,
+                "grade": "4+"
+            },
+            {
+                "student": 24,
+                "grade": "2-"
+            }
+        ]
+    },
+    {
+        "name": "Sprawdzian 1",
+        "grades": [
+            {
+                "student": 1,
+                "grade": "1"
+            },
+            {
+                "student": 2,
+                "grade": "3-"
+            },
+            {
+                "student": 3,
+                "grade": "2+"
+            },
+            {
+                "student": 4,
+                "grade": "3+"
+            },
+            {
+                "student": 5,
+                "grade": "4+"
+            },
+            {
+                "student": 6,
+                "grade": "3-"
+            },
+            {
+                "student": 7,
+                "grade": "5+"
+            },
+            {
+                "student": 8,
+                "grade": "3+"
+            },
+            {
+                "student": 9,
+                "grade": "6"
+            },
+            {
+                "student": 10,
+                "grade": "1"
+            },
+            {
+                "student": 11,
+                "grade": "3="
+            },
+            {
+                "student": 12,
+                "grade": "2-"
+            },
+            {
+                "student": 13,
+                "grade": "3-"
+            },
+            {
+                "student": 14,
+                "grade": "3-"
+            },
+            {
+                "student": 15,
+                "grade": "2="
+            },
+            {
+                "student": 16,
+                "grade": "6"
+            },
+            {
+                "student": 17,
+                "grade": "4-"
+            },
+            {
+                "student": 18,
+                "grade": "2-"
+            },
+            {
+                "student": 19,
+                "grade": "4="
+            },
+            {
+                "student": 20,
+                "grade": "2+"
+            },
+            {
+                "student": 21,
+                "grade": "5-"
+            },
+            {
+                "student": 22,
+                "grade": "5+"
+            },
+            {
+                "student": 23,
+                "grade": "3-"
+            },
+            {
+                "student": 24,
+                "grade": "2-"
+            }
+        ]
+    }
+]

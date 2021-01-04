@@ -1,0 +1,50 @@
+<template>
+  <v-container>
+    <v-row class="d-flex justify-center mt-10 mb-5">
+      <p class="display-2">Strona główna</p>
+    </v-row>
+    <v-row class="d-flex flex-sm-row flex-column-reverse justify-center">
+      <v-col col="12" md="6">
+        <page-menu :pages="pages"></page-menu>
+      </v-col>
+      <v-col col="12" md="5">
+        <subjects></subjects>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<script>
+import Subjects from "@/components/Subjects";
+import PageMenu from "@/components/PageMenu";
+export default {
+  data: () => ({
+    pages: [
+      {
+        text: "Plan zajęć",
+        url: "#",
+        image: "https://via.placeholder.com/150"
+      },
+      {
+        text: "Wiadomości",
+        url: "#",
+        image: "https://via.placeholder.com/150"
+      },
+      {
+        text: "Ustawienia",
+        url: "#",
+        image: "https://via.placeholder.com/150"
+      },
+      {
+        text: "Wyloguj",
+        url: "#",
+        image: "https://via.placeholder.com/150"
+      }
+    ]
+  }),
+  components: {
+    Subjects,
+    PageMenu
+  }
+};
+</script>

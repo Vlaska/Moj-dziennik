@@ -35,7 +35,7 @@
       </v-col>
     </v-form>
     <div class="text-center mt-5">
-        <p><router-link to="#">Nie pamiętam hasła.</router-link></p>
+      <p><router-link to="#">Nie pamiętam hasła.</router-link></p>
     </div>
   </v-container>
 </template>
