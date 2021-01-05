@@ -1,6 +1,5 @@
 <template>
   <v-container>
-      
     <!-- <v-form class="d-flex justify-center" @submit.prevent>
       <v-col cols="12" sm="8">
         <v-row>
@@ -19,7 +18,5 @@
 </template>
 
 <script>
-export default {
-  name: "SendMessage"
-};
+export default {};
 </script>

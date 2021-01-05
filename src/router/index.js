@@ -4,6 +4,7 @@ import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import MainPage from "../views/MainPage.vue";
 import ClassPage from "../views/ClassPage.vue";
+import Grades from "../views/Grades.vue";
 
 Vue.use(VueRouter);
 
@@ -27,6 +28,15 @@ const routes = [
     path: "/class/:class_name/:subject",
     name: "classPage",
     component: ClassPage
+  },
+  {
+    path: "/class/:class_name/:subject/grades",
+    name: "grades",
+    component: Grades
+  },
+  {
+    path: "*",
+    redirect: "/"
   }
 ];
 

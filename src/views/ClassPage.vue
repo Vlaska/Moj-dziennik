@@ -1,7 +1,10 @@
 <template>
   <v-container>
     <v-row class="d-flex justify-center mt-10 mb-5">
-      <p class="display-2">Klasa {{ class_name($route.params.class_name) }} &mdash; {{ subject_codes[$route.params.subject] }}</p>
+      <p class="display-2">
+        Klasa {{ class_name($route.params.class_name) }} &mdash;
+        {{ subject_codes[$route.params.subject] }}
+      </p>
     </v-row>
     <v-row class="d-flex flex-sm-row flex-column-reverse justify-center">
       <v-col col="12" md="6">
@@ -23,7 +26,7 @@ export default {
     pages: [
       {
         text: "Oceny",
-        url: "#",
+        url: { name: "grades" },
         image: "https://via.placeholder.com/150"
       },
       {
@@ -46,17 +49,9 @@ export default {
         url: { name: "mainPage" },
         image: "https://via.placeholder.com/150"
       }
-    ],
-    subject_codes: {
-      jpolski: "Język Polski",
-      informatyka: "Informatyka"
-    }
+    ]
   }),
-  methods: {
-    class_name(i) {
-      return "I".repeat(parseInt(i[0])) + i[1];
-    }
-  },
+
   components: {
     Subjects,
     PageMenu

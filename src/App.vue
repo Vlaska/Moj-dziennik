@@ -56,7 +56,9 @@ text
     <v-app-bar app="" color="indigo darken-1" dark>
       <div class="d-flex align-center">
         <h2>
-          <router-link to="/" style="color: inherit; text-decoration: inherit"
+          <router-link
+            :to="{ name: 'Home' }"
+            style="color: inherit; text-decoration: inherit"
             >Mój Dziennik</router-link
           >
         </h2>
@@ -72,7 +74,7 @@ text
         </v-breadcrumbs>
       </div>
       <v-spacer></v-spacer>
-      <router-link to="/login" v-if="!user_logged">
+      <router-link :to="{ name: 'login' }" v-if="!user_logged">
         <v-btn>Zaloguj</v-btn>
       </router-link>
       <div class="d-flex align-center" v-else><span>Witaj</span></div>
