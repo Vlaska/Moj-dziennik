@@ -8,9 +8,9 @@
       </p>
     </v-row>
 
-    <v-row>
-      <v-container fluid class="grade-grid">
-        <div style="grid-area: s">
+    <v-row class="d-flex justify-center">
+      <v-container fluid class="grade-grid mb-10">
+        <div style="grid-area: s;">
           <div width="fit-content" class="text-right">
             <v-sheet
               outlined
@@ -18,7 +18,7 @@
               v-for="student in students"
               :key="student.id"
               class="pa-2"
-              width="100%"
+              :width="width_of_name_plates"
             >
               {{ student.first_name + " " + student.last_name }}
             </v-sheet>
@@ -32,8 +32,19 @@
               v-for="grade in grades"
               :key="grade.name"
               class="px-3 py-2 grade-name"
+              :width="width_of_grade_column"
             >
               <span>{{ grade.name }}</span>
+            </v-sheet>
+            <v-sheet
+              outlined
+              elevation="2"
+              v-for="grade in num_of_empty_cols"
+              :key="grade"
+              class="px-3 py-2 grade-name"
+              :width="size_of_empty_col"
+            >
+              <span></span>
             </v-sheet>
           </div>
         </div>
@@ -55,9 +66,52 @@
                   : ''
               "
               height="42"
-              width="120"
+              :width="width_of_grade_column"
               @mousedown="setGrade"
               >{{ i.grade }}</v-sheet
+            >
+          </div>
+          <div v-for="i in num_of_empty_cols" :key="i">
+            <v-sheet
+              outlined
+              elevation="2"
+              v-for="j in students.length"
+              :key="j"
+              :student="j + 1"
+              :grade="grades.length + i"
+              class="pa-2 d-flex justify-center align-center no-select"
+              :height="size_of_empty_col"
+              :width="size_of_empty_col"
+              @mousedown="setGrade"
+            ></v-sheet>
+          </div>
+        </div>
+        <div style="grid-area: fn">
+          <v-sheet
+            outlined=""
+            elevation="2"
+            class="px-3 py-2 grade-name final"
+            :width="width_of_grade_column"
+            >Ocena końcowa</v-sheet
+          >
+        </div>
+        <div style="grid-area: fg">
+          <div>
+            <v-sheet
+              outlined=""
+              elevation="2"
+              class="final"
+              v-for="i in final_grades"
+              :key="i"
+              :class="
+                (current_grade !== 'pointer' && i !== null) ||
+                (i === null && current_grade !== 'trash')
+                  ? 'clickable'
+                  : ''
+              "
+              height="42"
+              :width="width_of_grade_column"
+              >{{ i }}</v-sheet
             >
           </div>
         </div>
@@ -90,7 +144,11 @@ export default {
       ["6"],
       ["+", "-", "N"]
     ],
-    current_grade: "pointer"
+    current_grade: "pointer",
+    width_of_name_plates: 205,
+    width_of_grade_column: 120,
+    size_of_empty_col: 42,
+    num_of_empty_cols: 2
   }),
   created() {
     this.fetchData();
@@ -104,7 +162,6 @@ export default {
     students: {
       deep: true,
       handler: function () {
-        this.final_grades = [];
         let key = `${this.$route.params.class_name}`;
         // if (!localStorage.getItem(key)) {
         localStorage.setItem(key, JSON.stringify(this.students));
@@ -119,6 +176,13 @@ export default {
         localStorage.setItem(key, JSON.stringify(this.grades));
         // }
       }
+    },
+    final_grades() {
+      if (!this.final_grades) {
+        this.final_grades = this.fillArray(null, this.students.length);
+      }
+      let key = `${this.$route.params.class_name}-${this.$route.params.subject}-final`;
+      localStorage.setItem(key, JSON.stringify(this.final_grades));
     }
   },
   methods: {
@@ -129,18 +193,26 @@ export default {
       const fetchSubject = this.$route.params.subject;
       let students_key = `${fetchClassName}`;
       let grades_key = `${fetchClassName}-${fetchSubject}`;
+      let final_grades_key = `${fetchClassName}-${fetchSubject}-finals`;
       let t;
-      if (!this.reset_data && !(t = localStorage.getItem(students_key))) {
+      if (!(t = localStorage.getItem(students_key))) {
         this.students = require(`@/klasy/${fetchClassName}/${fetchClassName}.json`);
       } else {
         this.students = JSON.parse(t);
       }
 
-      if (!this.reset_data && !(t = localStorage.getItem(grades_key))) {
+      if (!(t = localStorage.getItem(grades_key))) {
         this.grades = require(`@/klasy/${fetchClassName}/${fetchSubject}.json`);
       } else {
         this.grades = JSON.parse(t);
       }
+
+      if (!(t = localStorage.getItem(final_grades_key))) {
+        this.final_grades = this.fillArray(null, this.students.length);
+      } else {
+        this.final_grades = JSON.parse(t);
+      }
+
       this.reset_data = false;
     },
     setCurrentGrade(grade) {
@@ -171,7 +243,15 @@ export default {
 
       localStorage.removeItem(`${fetchClassName}`);
       localStorage.removeItem(`${fetchClassName}-${fetchSubject}`);
+      localStorage.removeItem(`${fetchClassName}-${fetchSubject}-final`);
       this.fetchData();
+    },
+    fillArray(value, len) {
+      let arr = [];
+      for (var i = 0; i < len; i++) {
+        arr.push(value);
+      }
+      return arr;
     }
   },
   components: { Selector }
@@ -181,15 +261,14 @@ export default {
 <style>
 .grade-grid {
   display: grid;
-  grid-template-columns: auto repeat(8, 1fr);
+  /* grid-template-columns: 205px 1fr 120px; */
+  grid-auto-columns: min-content;
   grid-template-areas:
-    ". n n n n n n n n"
-    "s g g g g g g g g";
+    ". n fn"
+    "s g fg";
 }
 
 .grade-name {
-  max-width: 120px;
-  min-width: 120px;
   overflow-wrap: break-word;
   overflow-wrap: anywhere;
   display: flex;
@@ -203,9 +282,10 @@ export default {
 	display: flex;
 } */
 
-.final-grades {
-  border-color: red;
-  font-color: red;
+.final {
+  border-color: red !important;
+  color: red !important;
+  background-color: #ffebee !important;
 }
 
 .no-select {
