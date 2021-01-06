@@ -6,9 +6,9 @@ import vuetify from "./plugins/vuetify";
 import Vuelidate from "vuelidate";
 
 // Odkomentować, gdyby jQuery było potrzebne
-// global.jQuery = require("jquery");
-// let $ = global.jQuery;
-// window.$ = $;
+global.jQuery = require("jquery");
+let $ = global.jQuery;
+window.$ = $;
 
 Vue.config.productionTip = false;
 Vue.use(Vuelidate);

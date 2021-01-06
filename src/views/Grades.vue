@@ -22,9 +22,10 @@
               v-for="student in students"
               :key="student.id"
               class="pa-2"
-              :class="{ 'on-hover': highlight_row === student.id - 1 }"
-              :row="student.id"
+              :row="student.id - 1"
               :width="width_of_name_plates"
+              @mouseenter="mouse_in_cell($event)"
+              @mouseleave="mouse_in_cell($event)"
             >
               {{ student.first_name + " " + student.last_name }}
             </v-sheet>
@@ -44,10 +45,11 @@
               :key="idx"
               :col="idx"
               class="px-3 py-2 grade-name"
-              :class="{ 'on-hover': highlight_col === idx }"
               :width="width_of_grade_column"
               :min-width="width_of_grade_column"
               :max-width="width_of_grade_column"
+              @mouseenter="mouse_in_cell($event)"
+              @mouseleave="mouse_in_cell($event)"
             >
               <span>{{ grade.name }}</span>
             </v-sheet>
@@ -58,12 +60,11 @@
               :key="grades.length + grade - 1"
               :col="grades.length + grade - 1"
               class="px-3 py-2 grade-name"
-              :class="{
-                'on-hover': highlight_col === grades.length + grade - 1
-              }"
               :width="size_of_empty_col"
               :min-width="size_of_empty_col"
               :max-width="size_of_empty_col"
+              @mouseenter="mouse_in_cell($event)"
+              @mouseleave="mouse_in_cell($event)"
             >
             </v-sheet>
           </div>
@@ -74,7 +75,11 @@
           ref="grades"
           @scroll="scrollTo($event, 'nameRow')"
         >
-          <div v-for="(grade, idx) in grades" :key="grade.name">
+          <div
+            v-for="(grade, idx) in grades"
+            :key="grade.name"
+            class="hoverable"
+          >
             <v-sheet
               outlined
               elevation="2"
@@ -83,15 +88,11 @@
               :student="i.student"
               :col="idx"
               :row="i.student - 1"
-              class="pa-2 d-flex justify-center align-center no-select"
+              class="pa-2 d-flex justify-center align-center no-select hoverable"
               :class="[
                 (current_grade !== 'pointer' && i.grade !== null) ||
                 (i.grade === null && current_grade !== 'trash')
                   ? 'clickable'
-                  : '',
-                grade_colors[i.grade],
-                highlight_col === idx || highlight_row === i.student - 1
-                  ? 'on-hover'
                   : ''
               ]"
               height="42"
@@ -102,7 +103,11 @@
               >{{ i.grade }}</v-sheet
             >
           </div>
-          <div v-for="i in num_of_empty_cols" :key="grades.length + i - 1">
+          <div
+            v-for="i in num_of_empty_cols"
+            :key="grades.length + i - 1"
+            class="hoverable"
+          >
             <v-sheet
               outlined
               elevation="2"
@@ -112,15 +117,11 @@
               :col="grades.length + i - 1"
               :row="j - 1"
               class="pa-2 d-flex justify-center align-center no-select"
-              :class="
-                highlight_col === grades.length + i - 1 ||
-                highlight_row === j - 1
-                  ? 'on-hover'
-                  : ''
-              "
               :height="size_of_empty_col"
               :width="size_of_empty_col"
               @mousedown="setGrade"
+              @mouseenter="mouse_in_cell($event)"
+              @mouseleave="mouse_in_cell($event)"
             ></v-sheet>
           </div>
         </div>
@@ -131,14 +132,13 @@
             class="px-3 py-2 grade-name final"
             :width="width_of_grade_column"
             :col="grades.length + num_of_empty_cols"
-            :class="{
-              'on-hover': highlight_col >= grades.length + num_of_empty_cols
-            }"
+            @mouseenter="mouse_in_cell($event)"
+            @mouseleave="mouse_in_cell($event)"
             >Ocena końcowa</v-sheet
           >
         </div>
         <div style="grid-area: fg">
-          <div>
+          <div class="final-hoverable">
             <v-sheet
               outlined=""
               elevation="2"
@@ -151,10 +151,6 @@
                 (current_grade !== 'pointer' && i !== null) ||
                 (i === null && current_grade !== 'trash')
                   ? 'clickable'
-                  : '',
-                highlight_col >= grades.length + num_of_empty_cols ||
-                highlight_row === idx
-                  ? 'on-hover'
                   : ''
               ]"
               height="42"
@@ -349,9 +345,13 @@ export default {
       let t;
       if ((t = src.attributes.row) !== undefined) {
         this.highlight_row = parseInt(t.value);
+      } else {
+        this.highlight_row = null;
       }
       if ((t = src.attributes.col) !== undefined) {
         this.highlight_col = parseInt(t.value);
+      } else {
+        this.highlight_col = null;
       }
     },
     // eslint-disable-next-line no-unused-vars
@@ -367,6 +367,7 @@ export default {
   },
   mounted: function () {
     window.addEventListener("resize", this.calc_num_of_empty_columns);
+    this.calc_num_of_empty_columns();
   },
   beforeDestroy: function () {
     window.removeEventListener("resize", this.calc_num_of_empty_columns);
@@ -433,6 +434,16 @@ export default {
 }
 
 .final.on-hover {
+  background-color: #ffcdd2 !important;
+}
+
+div.hoverable:hover,
+div.hoverable:hover > * {
+  background-color: #eeeeee !important;
+}
+
+div.final-hoverable:hover,
+div.final-hoverable:hover > * {
   background-color: #ffcdd2 !important;
 }
 </style>
