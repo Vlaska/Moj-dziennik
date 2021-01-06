@@ -24,10 +24,10 @@
             "
           >
             <span v-if="current_option == 'pointer'"
-              ><v-icon>fas fa-mouse-pointer</v-icon></span
+              ><v-icon>{{ pointer }}</v-icon></span
             >
             <span v-else-if="current_option == 'trash'"
-              ><v-icon>far fa-trash-alt</v-icon></span
+              ><v-icon>{{ trash }}</v-icon></span
             >
             <span v-else>
               {{ current_option }}
@@ -46,7 +46,9 @@
         :close-delay="200"
       >
         <template v-slot:activator="{ on, attrs }">
-          <v-btn color="success" v-bind="attrs" v-on="on" large>Oceny</v-btn>
+          <v-btn color="success" v-bind="attrs" v-on="on" large>{{
+            name
+          }}</v-btn>
         </template>
         <v-sheet
           max-width="fit-content"
@@ -70,7 +72,7 @@
                 >{{ j }}</v-btn
               >
             </div>
-            <div class="grid">
+            <div class="grid" v-if="lower_row">
               <v-btn
                 outlined
                 elevation="1"
@@ -85,7 +87,7 @@
                     ? 'cyan--text text--darken-4'
                     : ''
                 "
-                ><v-icon>fas fa-mouse-pointer</v-icon></v-btn
+                ><v-icon>{{ pointer }}</v-icon></v-btn
               >
               <v-btn
                 outlined
@@ -94,7 +96,7 @@
                 width="36"
                 @click="setCurrentGrade('trash')"
                 color="red lighten-4"
-                ><v-icon>far fa-trash-alt</v-icon></v-btn
+                ><v-icon>{{ trash }}</v-icon></v-btn
               >
             </div>
           </v-container>
@@ -109,19 +111,27 @@
 
 export default {
   data: () => ({
-    current_option: "pointer"
+    current_option: "pointer",
+    trash: 'far fa-trash-alt',
+    pointer: 'fas fa-mouse-pointer'
   }),
-  created() {
-    this.fetchData();
-  },
   props: {
-    options: Array,
-    name: String
+    options: {
+      type: Array,
+      required: true
+    },
+    name: {
+      type: String,
+      required: true
+    },
+    lower_row: {
+      type: Boolean,
+      default: true
+    }
   },
   watch: {
-    $route: "fetchData",
     current_option: function (val) {
-      this.$emit("option_changed", val);
+      this.$emit("option-changed", val);
     }
   },
   methods: {
@@ -144,7 +154,6 @@ export default {
 .grid {
   display: grid;
   grid-template-columns: 36px 36px 36px 36px;
-  /* grid-template-columns: repeat(auto-fit, 36px); */
   grid-gap: 0.5em;
 }
 

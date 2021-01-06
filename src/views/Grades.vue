@@ -7,126 +7,70 @@
         {{ subject_codes[$route.params.subject] }}
       </p>
     </v-row>
-    <div v-if="students" class="content">
-      <p>{{ students }}</p>
-    </div>
-    <div v-if="grades" class="content">
-      <p>{{ grades }}</p>
-    </div>
+
     <v-row>
-      <v-container fluid>
-        <table></table>
+      <v-container fluid class="grade-grid">
+        <div style="grid-area: s">
+          <div width="fit-content" class="text-right">
+            <v-sheet
+              outlined
+              elevation="2"
+              v-for="student in students"
+              :key="student.id"
+              class="pa-2"
+              width="100%"
+            >
+              {{ student.first_name + " " + student.last_name }}
+            </v-sheet>
+          </div>
+        </div>
+        <div style="grid-area: n">
+          <div width="fit-content" class="d-flex flex-row">
+            <v-sheet
+              outlined
+              elevation="2"
+              v-for="grade in grades"
+              :key="grade.name"
+              class="px-3 py-2 grade-name"
+            >
+              <span>{{ grade.name }}</span>
+            </v-sheet>
+          </div>
+        </div>
+        <div style="grid-area: g" class="d-flex">
+          <div v-for="grade in grades" :key="grade.name">
+            <!-- {{ grade.grades[0].grade }} -->
+            <v-sheet
+              outlined
+              elevation="2"
+              v-for="i in grade.grades"
+              :key="i.student"
+              class="pa-2 d-flex justify-center align-center"
+              height="42"
+              width="120"
+              >{{ i.grade }}</v-sheet
+            >
+          </div>
+        </div>
       </v-container>
     </v-row>
-    <div class="grade-selector">
-      <v-tooltip top>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            min-width="44"
-            width="44"
-            outlined
-            elevation="1"
-            class="mr-3"
-            style="font-size: 20px"
-            :class="
-              current_grade !== 'trash'
-                ? 'cyan--text text--darken-4'
-                : 'red--text text--accent-4'
-            "
-            large
-            v-bind="attrs"
-            v-on="on"
-            @click="resetCurrentGrade"
-            :color="
-              current_grade !== 'trash' ? 'cyan lighten-4' : 'red lighten-4'
-            "
-          >
-            <span v-if="current_grade == 'pointer'"
-              ><v-icon>fas fa-mouse-pointer</v-icon></span
-            >
-            <span v-else-if="current_grade == 'trash'"
-              ><v-icon>far fa-trash-alt</v-icon></span
-            >
-            <span v-else>
-              {{ current_grade }}
-            </span>
-          </v-btn>
-        </template>
-        <span>Naciśnij mnie, aby zresetować ocenę.</span>
-      </v-tooltip>
-      <v-menu
-        offset-y
-        top
-        left
-        open-on-hover
-        :close-on-click="false"
-        :close-on-content-click="false"
-        :close-delay="200"
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn color="success" v-bind="attrs" v-on="on" large>Oceny</v-btn>
-        </template>
-        <v-sheet
-          max-width="fit-content"
-          outlined
-          rounded
-          color="indigo lighten-5"
-        >
-          <v-container class="d-flex flex-column" style="width: 100%">
-            <div v-for="(i, idx) in types_of_grades" :key="idx" class="grid">
-              <v-btn
-                outlined
-                elevation="1"
-                v-for="j in i"
-                :key="j"
-                class="grade-btn"
-                width="36"
-                style="font-size: 20px"
-                @click="setCurrentGrade(j)"
-                :color="j == current_grade ? 'cyan lighten-4' : 'normal'"
-                :class="current_grade === j ? 'cyan--text text--darken-4' : ''"
-                >{{ j }}</v-btn
-              >
-            </div>
-            <div class="grid">
-              <v-btn
-                outlined
-                elevation="1"
-                class="grade-btn"
-                width="36"
-                @click="setCurrentGrade('pointer')"
-                :color="
-                  'pointer' == current_grade ? 'cyan lighten-4' : 'normal'
-                "
-                :class="
-                  current_grade === 'pointer' ? 'cyan--text text--darken-4' : ''
-                "
-                ><v-icon>fas fa-mouse-pointer</v-icon></v-btn
-              >
-              <v-btn
-                outlined
-                elevation="1"
-                class="grade-btn red--text text--accent-4"
-                width="36"
-                @click="setCurrentGrade('trash')"
-                color="red lighten-4"
-                ><v-icon>far fa-trash-alt</v-icon></v-btn
-              >
-            </div>
-          </v-container>
-        </v-sheet>
-      </v-menu>
-    </div>
+    <selector
+      :options="types_of_grades"
+      name="Oceny"
+      @option-changed="gradeChanged"
+    ></selector>
   </v-container>
 </template>
 
 <script>
 // import axios from "axios";
+import Selector from "@/components/Selector";
 
 export default {
   data: () => ({
     students: null,
     grades: null,
+    final_grades: null,
     types_of_grades: [
       ["1"],
       ["2", "2-", "2=", "2+"],
@@ -136,8 +80,7 @@ export default {
       ["6"],
       ["+", "-", "N"]
     ],
-    current_grade: "pointer",
-    grade_button_icon: "up"
+    current_grade: "pointer"
   }),
   created() {
     this.fetchData();
@@ -148,8 +91,24 @@ export default {
   },
   watch: {
     $route: "fetchData",
-    current_grade: function (val) {
-      this.$emit("option_changed", val);
+    students: {
+      deep: true,
+      handler: function () {
+        this.final_grades = [];
+        let key = `${this.$route.params.class_name}`;
+        // if (!localStorage.getItem(key)) {
+        localStorage.setItem(key, JSON.stringify(this.students));
+        // }
+      }
+    },
+    grades: {
+      deep: true,
+      handler: function () {
+        let key = `${this.$route.params.class_name}-${this.$route.params.subject}`;
+        // if (!localStorage.getItem(key)) {
+        localStorage.setItem(key, JSON.stringify(this.grades));
+        // }
+      }
     }
   },
   methods: {
@@ -158,41 +117,62 @@ export default {
       this.loading = true;
       const fetchClassName = this.$route.params.class_name;
       const fetchSubject = this.$route.params.subject;
-      this.students = require(`@/klasy/${fetchClassName}/${fetchClassName}.json`);
-      this.grades = require(`@/klasy/${fetchClassName}/${fetchSubject}.json`);
+      let students_key = `${fetchClassName}`;
+      let grades_key = `${fetchClassName}-${fetchSubject}`;
+      let t;
+      if (!(t = localStorage.getItem(students_key))) {
+        this.students = require(`@/klasy/${fetchClassName}/${fetchClassName}.json`);
+      } else {
+        this.students = JSON.parse(t);
+      }
+
+      if (!(t = localStorage.getItem(grades_key))) {
+        this.grades = require(`@/klasy/${fetchClassName}/${fetchSubject}.json`);
+      } else {
+        this.grades = JSON.parse(t);
+      }
     },
     setCurrentGrade(grade) {
       this.current_grade = grade;
     },
     resetCurrentGrade() {
       this.current_grade = "pointer";
+    },
+    gradeChanged(value) {
+      this.current_grade = value;
     }
-  }
+  },
+  components: { Selector }
 };
 </script>
 
 <style>
-.grade-btn {
-  min-width: 36px !important;
-  max-width: 36px !important;
-}
-
-.grid {
+.grade-grid {
   display: grid;
-  grid-template-columns: 36px 36px 36px 36px;
-  /* grid-template-columns: repeat(auto-fit, 36px); */
-  grid-gap: 0.5em;
+  grid-template-columns: auto repeat(8, 1fr);
+  grid-template-areas:
+    ". n n n n n n n n"
+    "s g g g g g g g g";
 }
 
-.grid:not(:last-child) {
-  padding-bottom: 0.5em;
-}
-
-.grade-selector {
+.grade-name {
+  max-width: 120px;
+  min-width: 120px;
+  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
   display: flex;
-  flex-direction: row;
-  position: fixed;
-  right: 50px;
-  bottom: 50px;
+  justify-content: center;
+  align-content: center;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+/* .name-area {
+	display: flex;
+} */
+
+.final-grades {
+  border-color: red;
+  font-color: red;
 }
 </style>

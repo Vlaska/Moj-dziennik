@@ -1,122 +1,67 @@
 [
     {
-        "first_name": "Jeremi",
-        "last_name": "Gadzina",
+        "first_name": "Malwina",
+        "last_name": "Bazela",
         "id": 1
     },
     {
-        "first_name": "\u0141ukasz",
-        "last_name": "Kurzyna",
+        "first_name": "Kornelia",
+        "last_name": "Flaga",
         "id": 2
     },
     {
-        "first_name": "Bianka",
-        "last_name": "Gilewicz",
+        "first_name": "Anna Maria",
+        "last_name": "Foremniak",
         "id": 3
     },
     {
-        "first_name": "Tomasz",
-        "last_name": "Boba",
+        "first_name": "Sylwia",
+        "last_name": "Kaja",
         "id": 4
     },
     {
-        "first_name": "Rafa\u0142",
-        "last_name": "Cibor",
+        "first_name": "Andrzej",
+        "last_name": "Koczy",
         "id": 5
     },
     {
-        "first_name": "Aurelia",
-        "last_name": "Szyja",
+        "first_name": "Gustaw",
+        "last_name": "Krajniak",
         "id": 6
     },
     {
-        "first_name": "Agnieszka",
-        "last_name": "Rze\u017aniczek",
+        "first_name": "Artur",
+        "last_name": "K\u0142\u00f3sek",
         "id": 7
     },
     {
-        "first_name": "Marcel",
-        "last_name": "Pyrkosz",
+        "first_name": "J\u00f3zef",
+        "last_name": "Leoniak",
         "id": 8
     },
     {
-        "first_name": "Igor",
-        "last_name": "Marach",
+        "first_name": "Rados\u0142aw",
+        "last_name": "Majak",
         "id": 9
     },
     {
-        "first_name": "Micha\u0142",
-        "last_name": "Fio\u0142ek",
+        "first_name": "Nikodem",
+        "last_name": "Pyzel",
         "id": 10
     },
     {
-        "first_name": "Artur",
-        "last_name": "Pyc",
+        "first_name": "Kajetan",
+        "last_name": "Rze\u017aniczek",
         "id": 11
     },
     {
-        "first_name": "Natasza",
-        "last_name": "Kasiak",
+        "first_name": "Marcel",
+        "last_name": "Szambelan",
         "id": 12
     },
     {
-        "first_name": "Urszula",
-        "last_name": "Maszczyk",
+        "first_name": "Eryk",
+        "last_name": "Wojczuk",
         "id": 13
-    },
-    {
-        "first_name": "Damian",
-        "last_name": "Chomiak",
-        "id": 14
-    },
-    {
-        "first_name": "Lidia",
-        "last_name": "Maszczyk",
-        "id": 15
-    },
-    {
-        "first_name": "Iwo",
-        "last_name": "\u0141yczak",
-        "id": 16
-    },
-    {
-        "first_name": "Szymon",
-        "last_name": "Buczma",
-        "id": 17
-    },
-    {
-        "first_name": "Maciej",
-        "last_name": "Dunal",
-        "id": 18
-    },
-    {
-        "first_name": "Bianka",
-        "last_name": "\u0141yczek",
-        "id": 19
-    },
-    {
-        "first_name": "Leonard",
-        "last_name": "Elwart",
-        "id": 20
-    },
-    {
-        "first_name": "Jerzy",
-        "last_name": "Sadownik",
-        "id": 21
-    },
-    {
-        "first_name": "Oliwier",
-        "last_name": "Kosak",
-        "id": 22
-    },
-    {
-        "first_name": "Franciszek",
-        "last_name": "Pra\u017cmo",
-        "id": 23
-    },
-    {
-        "first_name": "Dariusz",
-        "last_name": "Jo\u015bko",
-        "id": 24
     }
 ]
