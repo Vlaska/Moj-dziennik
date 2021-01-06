@@ -12,8 +12,9 @@
       <v-container
         fluid
         class="grade-grid mb-10"
-        @mouseleave="mouse_out_cell($event)"
+        @mouseleave="mouse_in_cell($event)"
       >
+        <div style="grid-area: ." @mouseenter="mouse_in_cell($event)"></div>
         <div style="grid-area: s">
           <div width="fit-content" class="text-right">
             <v-sheet
@@ -25,7 +26,6 @@
               :row="student.id - 1"
               :width="width_of_name_plates"
               @mouseenter="mouse_in_cell($event)"
-              @mouseleave="mouse_in_cell($event)"
             >
               {{ student.first_name + " " + student.last_name }}
             </v-sheet>
@@ -49,7 +49,6 @@
               :min-width="width_of_grade_column"
               :max-width="width_of_grade_column"
               @mouseenter="mouse_in_cell($event)"
-              @mouseleave="mouse_in_cell($event)"
             >
               <span>{{ grade.name }}</span>
             </v-sheet>
@@ -64,7 +63,6 @@
               :min-width="size_of_empty_col"
               :max-width="size_of_empty_col"
               @mouseenter="mouse_in_cell($event)"
-              @mouseleave="mouse_in_cell($event)"
             >
             </v-sheet>
           </div>
@@ -99,7 +97,6 @@
               :width="width_of_grade_column"
               @mousedown="setGrade"
               @mouseenter="mouse_in_cell($event)"
-              @mouseleave="mouse_in_cell($event)"
               >{{ i.grade }}</v-sheet
             >
           </div>
@@ -133,20 +130,19 @@
             :width="width_of_grade_column"
             :col="grades.length + num_of_empty_cols"
             @mouseenter="mouse_in_cell($event)"
-            @mouseleave="mouse_in_cell($event)"
             >Ocena końcowa</v-sheet
           >
         </div>
         <div style="grid-area: fg">
-          <div class="final-hoverable">
+          <div>
             <v-sheet
               outlined=""
               elevation="2"
               class="final"
               v-for="(i, idx) in final_grades"
               :key="i"
-              :col="idx"
-              :row="grades.length + num_of_empty_cols"
+              :row="idx"
+              :col="grades.length + num_of_empty_cols"
               :class="[
                 (current_grade !== 'pointer' && i !== null) ||
                 (i === null && current_grade !== 'trash')
@@ -155,6 +151,7 @@
               ]"
               height="42"
               :width="width_of_grade_column"
+              @mouseenter="mouse_in_cell($event)"
               >{{ i }}</v-sheet
             >
           </div>
@@ -174,6 +171,7 @@
 <script>
 // import axios from "axios";
 import Selector from "@/components/Selector";
+import $ from "jquery";
 
 export default {
   data: () => ({
@@ -255,6 +253,16 @@ export default {
       }
       let key = `${this.$route.params.class_name}-${this.$route.params.subject}-final`;
       localStorage.setItem(key, JSON.stringify(this.final_grades));
+    },
+    highlight_row(val, oldVal) {
+      $(`*[row="${oldVal}"]`).removeClass("on-hover");
+      $(`*[row="${val}"]`).addClass("on-hover");
+      $(`*[col="${this.highlight_col}"]`).addClass("on-hover");
+    },
+    highlight_col(val, oldVal) {
+      $(`*[col="${oldVal}"]`).removeClass("on-hover");
+      $(`*[col="${val}"]`).addClass("on-hover");
+      $(`*[row="${this.highlight_row}"]`).addClass("on-hover");
     }
   },
   methods: {
@@ -344,25 +352,21 @@ export default {
       let src = event.target;
       let t;
       if ((t = src.attributes.row) !== undefined) {
-        this.highlight_row = parseInt(t.value);
+        t = parseInt(t.value);
+        if (t !== this.highlight_row) {
+          this.highlight_row = t;
+        }
       } else {
         this.highlight_row = null;
       }
       if ((t = src.attributes.col) !== undefined) {
-        this.highlight_col = parseInt(t.value);
+        t = parseInt(t.value);
+        if (t !== this.highlight_col) {
+          this.highlight_col = t;
+        }
       } else {
         this.highlight_col = null;
       }
-    },
-    // eslint-disable-next-line no-unused-vars
-    mouse_out_cell(event) {
-      // let src = event.target;
-      // if (src.attributes.row === undefined) {
-      this.highlight_row = null;
-      // }
-      // if (src.attributes.col == undefined) {
-      this.highlight_col = null;
-      // }
     }
   },
   mounted: function () {
@@ -429,15 +433,17 @@ export default {
   /* transform: rotate(180deg); */
 }
 
-.on-hover {
+.on-hover,
+.on-hover > * {
   background-color: #eeeeee !important;
 }
 
-.final.on-hover {
+.final.on-hover,
+.final.on-hover > * {
   background-color: #ffcdd2 !important;
 }
 
-div.hoverable:hover,
+/* div.hoverable:hover,
 div.hoverable:hover > * {
   background-color: #eeeeee !important;
 }
@@ -445,5 +451,5 @@ div.hoverable:hover > * {
 div.final-hoverable:hover,
 div.final-hoverable:hover > * {
   background-color: #ffcdd2 !important;
-}
+} */
 </style>

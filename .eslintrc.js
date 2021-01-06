@@ -1,7 +1,8 @@
 module.exports = {
 	root: true,
 	env: {
-		node: true
+		node: true,
+		jquery: true
 	},
 	extends: ["plugin:vue/essential", "eslint:recommended", "@vue/prettier"],
 	parserOptions: {
@@ -12,4 +13,7 @@ module.exports = {
 		"no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
 		// "indent": ["error", 4]
 	},
+	globals: {
+		$: true
+	}
 };
