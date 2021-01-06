@@ -9,7 +9,11 @@
     </v-row>
 
     <v-row class="d-flex justify-center">
-      <v-container fluid class="grade-grid mb-10">
+      <v-container
+        fluid
+        class="grade-grid mb-10"
+        @mouseleave="mouse_out_cell($event)"
+      >
         <div style="grid-area: s">
           <div width="fit-content" class="text-right">
             <v-sheet
@@ -18,6 +22,8 @@
               v-for="student in students"
               :key="student.id"
               class="pa-2"
+              :class="{ 'on-hover': highlight_row === student.id - 1 }"
+              :row="student.id"
               :width="width_of_name_plates"
             >
               {{ student.first_name + " " + student.last_name }}
@@ -34,9 +40,11 @@
             <v-sheet
               outlined
               elevation="2"
-              v-for="grade in grades"
-              :key="grade.name"
+              v-for="(grade, idx) in grades"
+              :key="idx"
+              :col="idx"
               class="px-3 py-2 grade-name"
+              :class="{ 'on-hover': highlight_col === idx }"
               :width="width_of_grade_column"
               :min-width="width_of_grade_column"
               :max-width="width_of_grade_column"
@@ -47,13 +55,16 @@
               outlined
               elevation="2"
               v-for="grade in num_of_empty_cols"
-              :key="grade"
+              :key="grades.length + grade - 1"
+              :col="grades.length + grade - 1"
               class="px-3 py-2 grade-name"
+              :class="{
+                'on-hover': highlight_col === grades.length + grade - 1
+              }"
               :width="size_of_empty_col"
               :min-width="size_of_empty_col"
               :max-width="size_of_empty_col"
             >
-              <span></span>
             </v-sheet>
           </div>
         </div>
@@ -64,37 +75,49 @@
           @scroll="scrollTo($event, 'nameRow')"
         >
           <div v-for="(grade, idx) in grades" :key="grade.name">
-            <!-- {{ grade.grades[0].grade }} -->
             <v-sheet
               outlined
               elevation="2"
               v-for="i in grade.grades"
               :key="i.student"
               :student="i.student"
-              :grade="idx"
+              :col="idx"
+              :row="i.student - 1"
               class="pa-2 d-flex justify-center align-center no-select"
               :class="[
                 (current_grade !== 'pointer' && i.grade !== null) ||
                 (i.grade === null && current_grade !== 'trash')
                   ? 'clickable'
                   : '',
-                grade_colors[i.grade]
+                grade_colors[i.grade],
+                highlight_col === idx || highlight_row === i.student - 1
+                  ? 'on-hover'
+                  : ''
               ]"
               height="42"
               :width="width_of_grade_column"
               @mousedown="setGrade"
+              @mouseenter="mouse_in_cell($event)"
+              @mouseleave="mouse_in_cell($event)"
               >{{ i.grade }}</v-sheet
             >
           </div>
-          <div v-for="i in num_of_empty_cols" :key="i">
+          <div v-for="i in num_of_empty_cols" :key="grades.length + i - 1">
             <v-sheet
               outlined
               elevation="2"
               v-for="j in students.length"
-              :key="j"
+              :key="j - 1 + ',' + (grades.length + i - 1)"
               :student="j + 1"
-              :grade="grades.length + i"
+              :col="grades.length + i - 1"
+              :row="j - 1"
               class="pa-2 d-flex justify-center align-center no-select"
+              :class="
+                highlight_col === grades.length + i - 1 ||
+                highlight_row === j - 1
+                  ? 'on-hover'
+                  : ''
+              "
               :height="size_of_empty_col"
               :width="size_of_empty_col"
               @mousedown="setGrade"
@@ -107,6 +130,10 @@
             elevation="2"
             class="px-3 py-2 grade-name final"
             :width="width_of_grade_column"
+            :col="grades.length + num_of_empty_cols"
+            :class="{
+              'on-hover': highlight_col >= grades.length + num_of_empty_cols
+            }"
             >Ocena końcowa</v-sheet
           >
         </div>
@@ -116,14 +143,20 @@
               outlined=""
               elevation="2"
               class="final"
-              v-for="i in final_grades"
+              v-for="(i, idx) in final_grades"
               :key="i"
-              :class="
+              :col="idx"
+              :row="grades.length + num_of_empty_cols"
+              :class="[
                 (current_grade !== 'pointer' && i !== null) ||
                 (i === null && current_grade !== 'trash')
                   ? 'clickable'
+                  : '',
+                highlight_col >= grades.length + num_of_empty_cols ||
+                highlight_row === idx
+                  ? 'on-hover'
                   : ''
-              "
+              ]"
               height="42"
               :width="width_of_grade_column"
               >{{ i }}</v-sheet
@@ -189,7 +222,9 @@ export default {
     width_of_grade_column: 120,
     size_of_empty_col: 42,
     num_of_empty_cols: 1,
-    scroll_pos: 0
+    scroll_pos: 0,
+    highlight_row: null,
+    highlight_col: null
   }),
   created() {
     this.fetchData();
@@ -308,6 +343,26 @@ export default {
       let columns = Math.ceil(space_left / this.size_of_empty_col);
       // this.num_of_empty_cols = columns > 0 ? columns : 1;
       this.num_of_empty_cols = Math.max(columns, this.num_of_empty_cols);
+    },
+    mouse_in_cell(event) {
+      let src = event.target;
+      let t;
+      if ((t = src.attributes.row) !== undefined) {
+        this.highlight_row = parseInt(t.value);
+      }
+      if ((t = src.attributes.col) !== undefined) {
+        this.highlight_col = parseInt(t.value);
+      }
+    },
+    // eslint-disable-next-line no-unused-vars
+    mouse_out_cell(event) {
+      // let src = event.target;
+      // if (src.attributes.row === undefined) {
+      this.highlight_row = null;
+      // }
+      // if (src.attributes.col == undefined) {
+      this.highlight_col = null;
+      // }
     }
   },
   mounted: function () {
@@ -371,5 +426,13 @@ export default {
   background: transparent;
   display: none;
   /* transform: rotate(180deg); */
+}
+
+.on-hover {
+  background-color: #eeeeee !important;
+}
+
+.final.on-hover {
+  background-color: #ffcdd2 !important;
 }
 </style>
