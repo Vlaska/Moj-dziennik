@@ -10,7 +10,7 @@
 
     <v-row class="d-flex justify-center">
       <v-container fluid class="grade-grid mb-10">
-        <div style="grid-area: s;">
+        <div style="grid-area: s">
           <div width="fit-content" class="text-right">
             <v-sheet
               outlined
@@ -24,7 +24,7 @@
             </v-sheet>
           </div>
         </div>
-        <div style="grid-area: n">
+        <div style="grid-area: n" class="scrollable hide-scrollbar" ref="nameRow" @scroll="scrollTo($event, 'grades')">
           <div width="fit-content" class="d-flex flex-row">
             <v-sheet
               outlined
@@ -33,6 +33,8 @@
               :key="grade.name"
               class="px-3 py-2 grade-name"
               :width="width_of_grade_column"
+              :min-width="width_of_grade_column"
+              :max-width="width_of_grade_column"
             >
               <span>{{ grade.name }}</span>
             </v-sheet>
@@ -43,12 +45,19 @@
               :key="grade"
               class="px-3 py-2 grade-name"
               :width="size_of_empty_col"
+              :min-width="size_of_empty_col"
+              :max-width="size_of_empty_col"
             >
               <span></span>
             </v-sheet>
           </div>
         </div>
-        <div style="grid-area: g" class="d-flex">
+        <div
+          style="grid-area: g"
+          class="d-flex scrollable"
+          ref="grades"
+          @scroll="scrollTo($event, 'nameRow')"
+        >
           <div v-for="(grade, idx) in grades" :key="grade.name">
             <!-- {{ grade.grades[0].grade }} -->
             <v-sheet
@@ -148,7 +157,8 @@ export default {
     width_of_name_plates: 205,
     width_of_grade_column: 120,
     size_of_empty_col: 42,
-    num_of_empty_cols: 2
+    num_of_empty_cols: 10,
+    scroll_pos: 0
   }),
   created() {
     this.fetchData();
@@ -252,6 +262,12 @@ export default {
         arr.push(value);
       }
       return arr;
+    },
+    scrollTo(src_event, dst_ref) {
+      let dst = this.$refs[dst_ref];
+      // console.log(dst);
+      let pos = src_event.target.scrollLeft;
+      dst.scrollLeft = pos;
     }
   },
   components: { Selector }
@@ -261,8 +277,9 @@ export default {
 <style>
 .grade-grid {
   display: grid;
-  /* grid-template-columns: 205px 1fr 120px; */
-  grid-auto-columns: min-content;
+  overflow: hidden;
+  grid-template-columns: 205px minmax(0, 1fr) 120px;
+  /* grid-auto-columns: min-content; */
   grid-template-areas:
     ". n fn"
     "s g fg";
@@ -297,5 +314,16 @@ export default {
 
 .clickable {
   cursor: pointer;
+}
+
+.scrollable {
+  overflow-x: scroll;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+  display: none;
+  /* transform: rotate(180deg); */
 }
 </style>

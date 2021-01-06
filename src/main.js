@@ -5,6 +5,11 @@ import store from "./store";
 import vuetify from "./plugins/vuetify";
 import Vuelidate from "vuelidate";
 
+// Odkomentować, gdyby jQuery było potrzebne
+// global.jQuery = require("jquery");
+// let $ = global.jQuery;
+// window.$ = $;
+
 Vue.config.productionTip = false;
 Vue.use(Vuelidate);
 
@@ -46,7 +51,7 @@ function deepIsEqual(first, second) {
       case "number":
         // with JavaScript NaN != NaN so we need a special check
         if (isNaN(first[prop]) && isNaN(second[prop])) break;
-      // eslint-disable-next-line no-fallthrough
+        // eslint-disable-next-line no-fallthrough
       default:
         if (first[prop] != second[prop]) return false;
     }
