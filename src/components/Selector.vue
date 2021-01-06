@@ -68,7 +68,13 @@
                 style="font-size: 20px"
                 @click="setCurrentGrade(j)"
                 :color="j == current_option ? 'cyan lighten-4' : 'normal'"
-                :class="current_option === j ? 'cyan--text text--darken-4' : ''"
+                :class="
+                  current_option === j
+                    ? 'cyan--text text--darken-4'
+                    : colors
+                    ? colors[j]
+                    : ''
+                "
                 >{{ j }}</v-btn
               >
             </div>
@@ -112,8 +118,8 @@
 export default {
   data: () => ({
     current_option: "pointer",
-    trash: 'far fa-trash-alt',
-    pointer: 'fas fa-mouse-pointer'
+    trash: "far fa-trash-alt",
+    pointer: "fas fa-mouse-pointer"
   }),
   props: {
     options: {
@@ -127,7 +133,8 @@ export default {
     lower_row: {
       type: Boolean,
       default: true
-    }
+    },
+    colors: Object
   },
   watch: {
     current_option: function (val) {

@@ -24,7 +24,12 @@
             </v-sheet>
           </div>
         </div>
-        <div style="grid-area: n" class="scrollable hide-scrollbar" ref="nameRow" @scroll="scrollTo($event, 'grades')">
+        <div
+          style="grid-area: n"
+          class="scrollable hide-scrollbar"
+          ref="nameRow"
+          @scroll="scrollTo($event, 'grades')"
+        >
           <div width="fit-content" class="d-flex flex-row">
             <v-sheet
               outlined
@@ -68,12 +73,13 @@
               :student="i.student"
               :grade="idx"
               class="pa-2 d-flex justify-center align-center no-select"
-              :class="
+              :class="[
                 (current_grade !== 'pointer' && i.grade !== null) ||
                 (i.grade === null && current_grade !== 'trash')
                   ? 'clickable'
-                  : ''
-              "
+                  : '',
+                grade_colors[i.grade]
+              ]"
               height="42"
               :width="width_of_grade_column"
               @mousedown="setGrade"
@@ -129,6 +135,7 @@
     <selector
       :options="types_of_grades"
       name="Oceny"
+      :colors="grade_colors"
       @option-changed="gradeChanged"
     ></selector>
     <v-btn @click="resetData" color="indigo" dark>Zresetuj dane</v-btn>
@@ -153,6 +160,30 @@ export default {
       ["6"],
       ["+", "-", "N"]
     ],
+    grade_colors: {
+      1: "red--text text--accent-3",
+      2: "blue--text text--lighten-1",
+      3: "pink--text text--darken-2",
+      4: "amber--text text--darken-4",
+      5: "indigo--text text--darken-3",
+      6: "purple--text text--darken-4",
+      "2-": "green--text text--accent-3",
+      "3-": "blue-grey--text text--lighten-2",
+      "4-": "purple--text text--accent-2",
+      "5-": "deep-orange--text text--accent-4",
+      "2=": "light-blue--text text--accent-4",
+      "3=": "orange--text text--darken-3",
+      "4=": "grey--text text--darken-3",
+      "5=": "light-green--text text--darken-1",
+      "2+": "purple--text text--accent-3",
+      "3+": "deep-purple--text text--darken-3",
+      "4+": "teal--text text--darken-3",
+      "5+": "deep-orange--text text--darken-1",
+      "+": "pink--text text--accent-3",
+      "-": "brown--text text--darken-2",
+      N: "black--text",
+      null: "black--text"
+    },
     current_grade: "pointer",
     width_of_name_plates: 205,
     width_of_grade_column: 120,
