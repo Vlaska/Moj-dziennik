@@ -188,7 +188,7 @@ export default {
     width_of_name_plates: 205,
     width_of_grade_column: 120,
     size_of_empty_col: 42,
-    num_of_empty_cols: 10,
+    num_of_empty_cols: 1,
     scroll_pos: 0
   }),
   created() {
@@ -299,7 +299,22 @@ export default {
       // console.log(dst);
       let pos = src_event.target.scrollLeft;
       dst.scrollLeft = pos;
+    },
+    calc_num_of_empty_columns() {
+      let nameRow = this.$refs["nameRow"];
+      let space_used_by_existing_grades =
+        this.grades.length * this.width_of_grade_column;
+      let space_left = nameRow.clientWidth - space_used_by_existing_grades;
+      let columns = Math.ceil(space_left / this.size_of_empty_col);
+      // this.num_of_empty_cols = columns > 0 ? columns : 1;
+      this.num_of_empty_cols = Math.max(columns, this.num_of_empty_cols);
     }
+  },
+  mounted: function () {
+    window.addEventListener("resize", this.calc_num_of_empty_columns);
+  },
+  beforeDestroy: function () {
+    window.removeEventListener("resize", this.calc_num_of_empty_columns);
   },
   components: { Selector }
 };
