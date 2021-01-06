@@ -40,10 +40,10 @@ function deepIsEqual(first, second) {
     // Check the type of property to perform different comparisons
     switch (typeof first[prop]) {
       // If it is an object, decend for deep compare
-      case 'object':
+      case "object":
         if (!deepIsEqual(first[prop], second[prop])) return false;
         break;
-      case 'number':
+      case "number":
         // with JavaScript NaN != NaN so we need a special check
         if (isNaN(first[prop]) && isNaN(second[prop])) break;
       // eslint-disable-next-line no-fallthrough
@@ -52,7 +52,7 @@ function deepIsEqual(first, second) {
     }
   }
   return true;
-};
+}
 
 Vue.mixin({
   methods: {

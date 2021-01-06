@@ -38,16 +38,25 @@
           </div>
         </div>
         <div style="grid-area: g" class="d-flex">
-          <div v-for="grade in grades" :key="grade.name">
+          <div v-for="(grade, idx) in grades" :key="grade.name">
             <!-- {{ grade.grades[0].grade }} -->
             <v-sheet
               outlined
               elevation="2"
               v-for="i in grade.grades"
               :key="i.student"
-              class="pa-2 d-flex justify-center align-center"
+              :student="i.student"
+              :grade="idx"
+              class="pa-2 d-flex justify-center align-center no-select"
+              :class="
+                (current_grade !== 'pointer' && i.grade !== null) ||
+                (i.grade === null && current_grade !== 'trash')
+                  ? 'clickable'
+                  : ''
+              "
               height="42"
               width="120"
+              @mousedown="setGrade"
               >{{ i.grade }}</v-sheet
             >
           </div>
@@ -59,6 +68,7 @@
       name="Oceny"
       @option-changed="gradeChanged"
     ></selector>
+    <v-btn @click="resetData" color="indigo" dark>Zresetuj dane</v-btn>
   </v-container>
 </template>
 
@@ -120,17 +130,18 @@ export default {
       let students_key = `${fetchClassName}`;
       let grades_key = `${fetchClassName}-${fetchSubject}`;
       let t;
-      if (!(t = localStorage.getItem(students_key))) {
+      if (!this.reset_data && !(t = localStorage.getItem(students_key))) {
         this.students = require(`@/klasy/${fetchClassName}/${fetchClassName}.json`);
       } else {
         this.students = JSON.parse(t);
       }
 
-      if (!(t = localStorage.getItem(grades_key))) {
+      if (!this.reset_data && !(t = localStorage.getItem(grades_key))) {
         this.grades = require(`@/klasy/${fetchClassName}/${fetchSubject}.json`);
       } else {
         this.grades = JSON.parse(t);
       }
+      this.reset_data = false;
     },
     setCurrentGrade(grade) {
       this.current_grade = grade;
@@ -140,6 +151,27 @@ export default {
     },
     gradeChanged(value) {
       this.current_grade = value;
+    },
+    setGrade(event) {
+      if (this.current_grade === "pointer") return;
+      let t = event.target;
+      let student = parseInt(t.getAttribute("student"));
+      let grade_column = parseInt(t.getAttribute("grade"));
+      if (this.current_grade === "trash") {
+        this.grades[grade_column].grades[student - 1].grade = null;
+      } else {
+        this.grades[grade_column].grades[
+          student - 1
+        ].grade = this.current_grade;
+      }
+    },
+    resetData() {
+      const fetchClassName = this.$route.params.class_name;
+      const fetchSubject = this.$route.params.subject;
+
+      localStorage.removeItem(`${fetchClassName}`);
+      localStorage.removeItem(`${fetchClassName}-${fetchSubject}`);
+      this.fetchData();
     }
   },
   components: { Selector }
@@ -174,5 +206,16 @@ export default {
 .final-grades {
   border-color: red;
   font-color: red;
+}
+
+.no-select {
+  -webkit-user-select: none; /* Chrome all / Safari all */
+  -moz-user-select: none; /* Firefox all */
+  -ms-user-select: none; /* IE 10+ */
+  user-select: none; /* Likely future */
+}
+
+.clickable {
+  cursor: pointer;
 }
 </style>
