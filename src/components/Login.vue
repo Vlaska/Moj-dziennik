@@ -10,8 +10,9 @@
             autocomplete="username"
             :error-messages="usernameErrors"
             @input="$v.username.$touch()"
-            @blur="$v.username.$touch()"
-          ></v-text-field>
+          >
+            @blur="$v.username.$touch()" ></v-text-field
+          >
         </v-row>
         <v-row>
           <v-text-field

@@ -9,6 +9,14 @@
     </v-row>
 
     <v-row class="d-flex justify-center">
+      <v-container fluid class="d-flex justify-end my-2 py-0">
+        <v-btn text class="d-flex align-center" @click="openEditModal">
+          <v-icon class="pr-2">fas fa-plus</v-icon>
+          <span style="font-size: 18px; font-weight: bold; margin-bottom: -2px;"
+            >Dodaj nową kolumnę</span
+          >
+        </v-btn>
+      </v-container>
       <v-container
         fluid
         class="grade-grid mb-10"
@@ -44,7 +52,7 @@
               v-for="(grade, idx) in grades"
               :key="idx"
               :col="idx"
-              class="px-3 py-2 grade-name"
+              class="px-3 py-2 grade-name clickable"
               :width="width_of_grade_column"
               :min-width="width_of_grade_column"
               :max-width="width_of_grade_column"
@@ -58,12 +66,13 @@
               v-for="grade in num_of_empty_cols"
               :key="grades.length + grade - 1"
               :col="grades.length + grade - 1"
-              class="px-3 py-2 grade-name"
+              class="px-3 py-2 grade-name empty clickable"
               :width="size_of_empty_col"
               :min-width="size_of_empty_col"
               :max-width="size_of_empty_col"
               @mouseenter="mouse_in_cell($event)"
-            >
+              @mousedown="openEditModal"
+              ><v-icon>fas fa-plus</v-icon>
             </v-sheet>
           </div>
         </div>
@@ -106,13 +115,14 @@
               :student="j + 1"
               :col="grades.length + i - 1"
               :row="j - 1"
-              class="pa-2 d-flex justify-center align-center no-select"
+              class="pa-2 d-flex justify-center align-center no-select empty clickable"
               :height="size_of_empty_col"
               :width="size_of_empty_col"
               @mousedown="setGrade"
               @mouseenter="mouse_in_cell($event)"
               @mouseleave="mouse_in_cell($event)"
-            ></v-sheet>
+              ><v-icon>fas fa-plus</v-icon></v-sheet
+            >
           </div>
         </div>
         <div style="grid-area: fn">
@@ -159,12 +169,21 @@
       @option-changed="gradeChanged"
     ></selector>
     <v-btn @click="resetData" color="indigo" dark>Zresetuj dane</v-btn>
+    <div ref="modalContainer">
+      <component
+        v-if="show_modal"
+        :is="modal"
+        v-bind="modal_data"
+        @close-modal="closeEditModal"
+        @save="saveColumn"
+      ></component>
+    </div>
   </v-container>
 </template>
 
 <script>
-// import axios from "axios";
 import Selector from "@/components/Selector";
+import EditColDialog from "@/components/EditColDialog";
 import $ from "jquery";
 
 // const GRADE_CONVERSION = {
@@ -262,7 +281,12 @@ export default {
     num_of_empty_cols: 1,
     scroll_pos: 0,
     highlight_row: null,
-    highlight_col: null
+    highlight_col: null,
+    edit_modal_open: false,
+    editing_column: null,
+    modal: "",
+    show_modal: false,
+    modal_data: {}
   }),
   created() {
     this.fetchData();
@@ -385,6 +409,7 @@ export default {
       localStorage.removeItem(`${fetchClassName}-${fetchSubject}`);
       localStorage.removeItem(`${fetchClassName}-${fetchSubject}-final`);
       this.fetchData();
+      this.calc_num_of_empty_columns();
     },
     initFinalGrades() {
       let arr = [];
@@ -428,6 +453,63 @@ export default {
       } else {
         this.highlight_col = null;
       }
+    },
+    isNameUnique(value) {
+      for (let i of this.grades) {
+        if (i.name === value) return false;
+      }
+      return true;
+    },
+    // eslint-disable-next-line no-unused-vars
+    openEditModal(edit_col) {
+      if (edit_col) {
+        this.editing_column = this.grades[edit_col];
+      }
+      this.show_modal = true;
+      this.modal_data = {
+        active: this.show_modal,
+        title: "Dodaj nową kolumnę",
+        suggestions: this.name_suggestions,
+        validator: this.isNameUnique,
+        data: this.editing_column
+      };
+      this.modal = "edit-col-dialog";
+    },
+    closeEditModal() {
+      this.show_modal = false;
+      this.modal = null;
+      this.modal_data = {};
+    },
+    addNewGradeColumn(data) {
+      let grades = Object.assign(this.grades);
+      let new_col = data;
+      new_col.grades = [];
+      for (let i = 1; i < this.students.length + 1; ++i) {
+        new_col.grades.push({ student: i, grade: null });
+      }
+      grades.push(new_col);
+      this.grades = grades.sort((a, b) => {
+        return a.name.localeCompare(b.name);
+      });
+    },
+    saveColumn(data) {
+      if (this.editing_column) {
+        this.editing_column.name = data.name;
+        this.editing_column.weight = data.weight;
+        this.editing_column.description = data.description;
+        this.editing_column = null;
+      } else {
+        this.addNewGradeColumn(data);
+      }
+    }
+  },
+  computed: {
+    name_suggestions() {
+      let out = [];
+      for (let i of this.grades) {
+        out.push(i.name.replace(/\s*\d*$/, ""));
+      }
+      return out;
     }
   },
   mounted: function () {
@@ -437,7 +519,7 @@ export default {
   beforeDestroy: function () {
     window.removeEventListener("resize", this.calc_num_of_empty_columns);
   },
-  components: { Selector }
+  components: { Selector, EditColDialog }
 };
 </script>
 
@@ -506,5 +588,13 @@ export default {
 
 .not-final {
   color: rgb(131, 131, 131) !important;
+}
+
+.empty > i {
+  opacity: 0;
+}
+
+.empty:hover > i {
+  opacity: 1;
 }
 </style>
