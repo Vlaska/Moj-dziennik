@@ -215,6 +215,7 @@ import EditColDialog from "@/components/EditColDialog";
 import ColumnDoesntExist from "@/components/ColumnDoesntExist";
 import SelectorMenu from "@/components/SelectorMenu";
 import GradeNotAcceptedModal from "@/components/GradeNotAcceptedModal";
+import DeleteAllGradesInColumnModal from "@/components/DeleteAllGradesInColumnModal";
 import $ from "jquery";
 
 // const GRADE_CONVERSION = {
@@ -575,9 +576,17 @@ export default {
       if (this.current_grade === "pointer") {
         this.openEditModal(idx);
       } else if (this.current_grade === "trash") {
-        for (let i of this.grades[idx].grades) {
-          i.grade = null;
-        }
+        let grades = this.grades[idx].grades;
+        this.show_modal = true;
+        this.modal_data = {
+          active: this.show_modal,
+          onDelete() {
+            for (let i of grades) {
+              i.grade = null;
+            }
+          }
+        };
+        this.modal = "delete-all-grades-in-column-modal";
         return;
       } else {
         for (let i of this.grades[idx].grades) {
@@ -617,7 +626,8 @@ export default {
     EditColDialog,
     ColumnDoesntExist,
     SelectorMenu,
-    GradeNotAcceptedModal
+    GradeNotAcceptedModal,
+    DeleteAllGradesInColumnModal
   }
 };
 </script>
