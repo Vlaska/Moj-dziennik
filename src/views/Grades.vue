@@ -59,7 +59,7 @@
               :min-width="width_of_grade_column"
               :max-width="width_of_grade_column"
               @mouseenter="mouse_in_cell($event)"
-              @mousedown="headerClicked(idx)"
+              @mousedown="headerClicked($event, idx)"
             >
               <span class="d-flex align-center flex-column">
                 <span>{{ grade.name }}</span>
@@ -76,7 +76,7 @@
               :min-width="size_of_empty_col"
               :max-width="size_of_empty_col"
               @mouseenter="mouse_in_cell($event)"
-              @mousedown="openEditModal"
+              @mousedown="openEditModal(null, $event)"
               ><v-icon>fas fa-plus</v-icon>
             </v-sheet>
           </div>
@@ -124,7 +124,7 @@
               class="pa-2 d-flex justify-center align-center no-select empty clickable"
               :height="size_of_empty_col"
               :width="size_of_empty_col"
-              @mousedown="undefinedColumn"
+              @mousedown.prevent="undefinedColumn($event)"
               @mouseenter="mouse_in_cell($event)"
               @mouseleave="mouse_in_cell($event)"
               ><v-icon>fas fa-plus</v-icon></v-sheet
@@ -418,21 +418,25 @@ export default {
         this.grades[grade_column].grades[student].grade = this.current_grade;
       }
     },
-    setFinalGrade(event) {
-      if (this.current_grade === "pointer") return;
+    setFinalGrade(event, grade) {
+      if (event && event.button === 2) return;
+      if (this.current_grade === "pointer" && grade === undefined) return;
+      if (grade === undefined) {
+        grade = this.current_grade;
+      }
       let t = event.target;
       let student = parseInt(t.getAttribute("row"));
-      if (this.current_grade === "trash") {
+      if (grade === "trash") {
         this.final_grades[student].grade = null;
         this.final_grades[student].final = false;
       } else {
-        if (!ACCEPTED_FINAL_GRADES[this.current_grade]) return;
-        if (this.current_grade == this.final_grades[student].grade) {
+        if (!ACCEPTED_FINAL_GRADES[grade]) return;
+        if (grade == this.final_grades[student].grade) {
           this.final_grades[student].final = true;
         } else {
           this.final_grades[student].final = false;
         }
-        this.final_grades[student].grade = this.current_grade;
+        this.final_grades[student].grade = grade;
       }
     },
     resetData() {
@@ -496,7 +500,8 @@ export default {
       return true;
     },
     // eslint-disable-next-line no-unused-vars
-    openEditModal(edit_col) {
+    openEditModal(edit_col, event) {
+      if (event && event.button === 2) return;
       if (edit_col) {
         this.editing_column = this.grades[edit_col];
       }
@@ -511,7 +516,9 @@ export default {
       };
       this.modal = "edit-col-dialog";
     },
-    undefinedColumn() {
+    undefinedColumn(event) {
+      if (event.button === 2) return;
+
       this.show_modal = true;
       let closeModal = this.closeModal;
       let openEditModal = this.openEditModal;
@@ -551,7 +558,8 @@ export default {
         this.addNewGradeColumn(data);
       }
     },
-    headerClicked(idx) {
+    headerClicked(event, idx) {
+      if (event.button === 2) return;
       if (this.current_grade === "pointer") {
         this.openEditModal(idx);
       } else if (this.current_grade === "trash") {
@@ -572,7 +580,7 @@ export default {
       this.mouseX = event.clientX;
       this.mouseY = event.clientY;
       // this.$nextTick(() => {
-        this.showGradeSelectMenu = true;
+      this.showGradeSelectMenu = true;
       // });
     }
   },
