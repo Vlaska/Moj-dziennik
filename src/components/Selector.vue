@@ -1,41 +1,41 @@
 <template>
   <v-container>
     <div class="grade-selector">
-      <v-tooltip top>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            min-width="44"
-            width="44"
-            outlined
-            elevation="1"
-            class="mr-3"
-            style="font-size: 20px"
-            :class="
-              current_option !== 'trash'
-                ? 'cyan--text text--darken-4'
-                : 'red--text text--accent-4'
-            "
-            large
-            v-bind="attrs"
-            v-on="on"
-            @click="resetCurrentGrade"
-            :color="
-              current_option !== 'trash' ? 'cyan lighten-4' : 'red lighten-4'
-            "
-          >
-            <span v-if="current_option == 'pointer'"
-              ><v-icon>{{ pointer }}</v-icon></span
-            >
-            <span v-else-if="current_option == 'trash'"
-              ><v-icon>{{ trash }}</v-icon></span
-            >
-            <span v-else>
-              {{ current_option }}
-            </span>
-          </v-btn>
-        </template>
-        <span>Naciśnij mnie, aby zresetować ocenę.</span>
-      </v-tooltip>
+      <v-btn
+        min-width="44"
+        width="44"
+        outlined
+        elevation="1"
+        class="mr-3"
+        style="font-size: 20px"
+        :class="
+          current_option !== 'trash'
+            ? 'cyan--text text--darken-4'
+            : 'red--text text--accent-4'
+        "
+        large
+        content="Naciśnij mnie, aby zresetować aktualnie wybraną ocenę."
+        v-tippy="{
+          animateFill: false,
+          animation: 'shift-away',
+          placement: 'top-end',
+          theme: 'dark',
+          arrow: true
+        }"
+        :delay="[400, 0]"
+        @click="resetCurrentGrade"
+        :color="current_option !== 'trash' ? 'cyan lighten-4' : 'red lighten-4'"
+      >
+        <span v-if="current_option == 'pointer'"
+          ><v-icon>{{ pointer }}</v-icon></span
+        >
+        <span v-else-if="current_option == 'trash'"
+          ><v-icon>{{ trash }}</v-icon></span
+        >
+        <span v-else>
+          {{ current_option }}
+        </span>
+      </v-btn>
       <v-menu
         offset-y
         top

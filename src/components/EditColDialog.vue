@@ -10,7 +10,7 @@
               v-model="name"
               label="Nazwa kolumny"
               required
-              @input="$v.name.$touch()"
+              @input.native="nameInput"
               @blur="$v.name.$touch()"
               autocomplete="off"
               :error-messages="nameErrors()"
@@ -77,23 +77,9 @@ export default {
     title: String,
     data: Object,
     suggestions: Array,
-    validator: Function
+    validator: Function,
+    onSave: { type: Function, required: true }
   },
-  // watch: {
-    // data(value) {
-    //   if (!value) return;
-    //   this.name = value.name;
-    //   this.weight = value.weight;
-    //   this.description = value.description || "";
-    // },
-    // active(value) {
-    //   if (value) {
-    //     this.$v.name.$reset;
-    //     this.$v.$reset;
-    //     this.is_invalid = false;
-    //   }
-    // }
-  // },
   methods: {
     close() {
       this.$emit("close-modal");
@@ -101,7 +87,7 @@ export default {
     save() {
       this.is_invalid = this.$v.name.$invalid;
       if (this.is_invalid) return;
-      this.$emit("save", {
+      this.onSave({
         name: this.name,
         description: this.description,
         weight: this.weight
@@ -115,9 +101,13 @@ export default {
       !this.$v.name.isUnique &&
         errors.push("Kolumna z podaną nazwą już istnieje.");
       return errors;
+    },
+    nameInput(event) {
+      this.name = event.srcElement.value;
+      this.$v.name.$touch();
     }
   },
-  mounted () {
+  mounted() {
     if (this.data) {
       this.name = this.data.name;
       this.weight = this.data.weight;

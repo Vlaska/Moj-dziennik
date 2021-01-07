@@ -12,7 +12,7 @@
       <v-container fluid class="d-flex justify-end my-2 py-0">
         <v-btn text class="d-flex align-center" @click="openEditModal">
           <v-icon class="pr-2">fas fa-plus</v-icon>
-          <span style="font-size: 18px; font-weight: bold; margin-bottom: -2px;"
+          <span style="font-size: 18px; font-weight: bold; margin-bottom: -2px"
             >Dodaj nową kolumnę</span
           >
         </v-btn>
@@ -52,14 +52,16 @@
               v-for="(grade, idx) in grades"
               :key="idx"
               :col="idx"
-              class="px-3 py-2 grade-name clickable"
+              class="px-3 py-2 grade-name clickable cog"
               :width="width_of_grade_column"
               :min-width="width_of_grade_column"
               :max-width="width_of_grade_column"
               @mouseenter="mouse_in_cell($event)"
               @mousedown="openEditModal(idx)"
             >
-              <span>{{ grade.name }}</span>
+              <span class="d-flex align-center flex-column">
+                <span>{{ grade.name }}</span>
+              </span>
             </v-sheet>
             <v-sheet
               outlined
@@ -78,7 +80,7 @@
           </div>
         </div>
         <div
-          style="grid-area: g"
+          style="grid-area: g;"
           class="d-flex scrollable"
           ref="grades"
           @scroll="scrollTo($event, 'nameRow')"
@@ -119,7 +121,7 @@
               class="pa-2 d-flex justify-center align-center no-select empty clickable"
               :height="size_of_empty_col"
               :width="size_of_empty_col"
-              @mousedown="setGrade"
+              @mousedown="undefinedColumn"
               @mouseenter="mouse_in_cell($event)"
               @mouseleave="mouse_in_cell($event)"
               ><v-icon>fas fa-plus</v-icon></v-sheet
@@ -130,11 +132,12 @@
           <v-sheet
             outlined=""
             elevation="2"
-            class="px-3 py-2 grade-name final"
+            class="px-3 py-2 grade-name final clickable cog"
+            height="100%"
             :width="width_of_grade_column"
             :col="grades.length + num_of_empty_cols"
             @mouseenter="mouse_in_cell($event)"
-            >Ocena końcowa</v-sheet
+            ><span>Ocena końcowa</span></v-sheet
           >
         </div>
         <div style="grid-area: fg">
@@ -175,8 +178,7 @@
         v-if="show_modal"
         :is="modal"
         v-bind="modal_data"
-        @close-modal="closeEditModal"
-        @save="saveColumn"
+        @close-modal="closeModal"
       ></component>
     </div>
   </v-container>
@@ -185,6 +187,7 @@
 <script>
 import Selector from "@/components/Selector";
 import EditColDialog from "@/components/EditColDialog";
+import ColumnDoesntExist from "@/components/ColumnDoesntExist";
 import $ from "jquery";
 
 // const GRADE_CONVERSION = {
@@ -473,11 +476,25 @@ export default {
         title: this.editing_column ? "Edytuj kolumnę" : "Dodaj nową kolumnę",
         suggestions: this.name_suggestions,
         validator: this.isNameUnique,
-        data: this.editing_column
+        data: this.editing_column,
+        onSave: this.saveColumn
       };
       this.modal = "edit-col-dialog";
     },
-    closeEditModal() {
+    undefinedColumn() {
+      this.show_modal = true;
+      let closeModal = this.closeModal;
+      let openEditModal = this.openEditModal;
+      this.modal_data = {
+        active: true,
+        onSave() {
+          closeModal();
+          openEditModal();
+        }
+      };
+      this.modal = "column-doesnt-exist";
+    },
+    closeModal() {
       this.show_modal = false;
       this.modal = null;
       this.modal_data = {};
@@ -521,7 +538,7 @@ export default {
   beforeDestroy: function () {
     window.removeEventListener("resize", this.calc_num_of_empty_columns);
   },
-  components: { Selector, EditColDialog }
+  components: { Selector, EditColDialog, ColumnDoesntExist }
 };
 </script>
 
@@ -598,5 +615,17 @@ export default {
 
 .empty:hover > i {
   opacity: 1;
+}
+
+.cog:hover * {
+  display: none;
+}
+
+.cog:hover::after {
+  display: block;
+  content: "\f013";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  font-size: 24px;
 }
 </style>

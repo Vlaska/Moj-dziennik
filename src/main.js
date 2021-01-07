@@ -4,7 +4,7 @@ import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
 import Vuelidate from "vuelidate";
-
+import VueTippy, { TippyComponent } from "vue-tippy";
 // Odkomentować, gdyby jQuery było potrzebne
 global.jQuery = require("jquery");
 let $ = global.jQuery;
@@ -26,6 +26,20 @@ Vue.mixin({
     }
   })
 });
+
+Vue.use(VueTippy, {
+  directive: "tippy", // => v-tippy
+  flipDuration: 0,
+  popperOptions: {
+    modifiers: {
+      preventOverflow: {
+        enabled: false
+      }
+    }
+  }
+});
+
+Vue.component("tippy", TippyComponent);
 
 function deepIsEqual(first, second) {
   // If first and second are the same type and have the same value
@@ -58,6 +72,7 @@ function deepIsEqual(first, second) {
   }
   return true;
 }
+
 
 Vue.mixin({
   methods: {

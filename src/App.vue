@@ -87,6 +87,10 @@ text
 
 <script>
 // import HelloWorld from "./components/HelloWorld";
+require("tippy.js/themes/light.css");
+require("tippy.js/themes/light-border.css");
+require("tippy.js/themes/google.css");
+require("tippy.js/themes/translucent.css");
 document.title = "Mój Dziennik";
 export default {
   name: "App",
@@ -115,3 +119,8 @@ export default {
 </script>
 
 <style src="@/assets/css/all.css"></style>
+<style>
+body {
+  font-family: "Roboto Helvetica";
+}
+</style>
