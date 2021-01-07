@@ -214,6 +214,7 @@ import Selector from "@/components/Selector";
 import EditColDialog from "@/components/EditColDialog";
 import ColumnDoesntExist from "@/components/ColumnDoesntExist";
 import SelectorMenu from "@/components/SelectorMenu";
+import GradeNotAcceptedModal from "@/components/GradeNotAcceptedModal";
 import $ from "jquery";
 
 // const GRADE_CONVERSION = {
@@ -430,7 +431,10 @@ export default {
         this.final_grades[student].grade = null;
         this.final_grades[student].final = false;
       } else {
-        if (!ACCEPTED_FINAL_GRADES[grade]) return;
+        if (!ACCEPTED_FINAL_GRADES[grade]) {
+          this.gradeNotAccepted();
+          return;
+        }
         if (grade == this.final_grades[student].grade) {
           this.final_grades[student].final = true;
         } else {
@@ -523,13 +527,21 @@ export default {
       let closeModal = this.closeModal;
       let openEditModal = this.openEditModal;
       this.modal_data = {
-        active: true,
+        active: this.show_modal,
         onSave() {
           closeModal();
           openEditModal();
         }
       };
       this.modal = "column-doesnt-exist";
+    },
+    gradeNotAccepted() {
+      this.show_modal = true;
+      this.modal_data = {
+        active: this.show_modal,
+        colors: this.grade_colors
+      };
+      this.modal = "grade-not-accepted-modal";
     },
     closeModal() {
       this.show_modal = false;
@@ -600,7 +612,13 @@ export default {
   beforeDestroy: function () {
     window.removeEventListener("resize", this.calc_num_of_empty_columns);
   },
-  components: { Selector, EditColDialog, ColumnDoesntExist, SelectorMenu }
+  components: {
+    Selector,
+    EditColDialog,
+    ColumnDoesntExist,
+    SelectorMenu,
+    GradeNotAcceptedModal
+  }
 };
 </script>
 
