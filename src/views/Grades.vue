@@ -57,6 +57,7 @@
               :min-width="width_of_grade_column"
               :max-width="width_of_grade_column"
               @mouseenter="mouse_in_cell($event)"
+              @mousedown="openEditModal(idx)"
             >
               <span>{{ grade.name }}</span>
             </v-sheet>
@@ -455,6 +456,7 @@ export default {
       }
     },
     isNameUnique(value) {
+      if (this.editing_column && this.editing_column.name == value) return true;
       for (let i of this.grades) {
         if (i.name === value) return false;
       }
@@ -468,7 +470,7 @@ export default {
       this.show_modal = true;
       this.modal_data = {
         active: this.show_modal,
-        title: "Dodaj nową kolumnę",
+        title: this.editing_column ? "Edytuj kolumnę" : "Dodaj nową kolumnę",
         suggestions: this.name_suggestions,
         validator: this.isNameUnique,
         data: this.editing_column

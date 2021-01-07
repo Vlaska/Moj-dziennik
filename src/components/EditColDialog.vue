@@ -79,21 +79,21 @@ export default {
     suggestions: Array,
     validator: Function
   },
-  watch: {
-    data(value) {
-      if (!value) return;
-      this.name = value.name;
-      this.weight = value.weight;
-      this.description = value.description || "";
-    },
-    active(value) {
-      if (value) {
-        this.$v.name.$reset;
-        this.$v.$reset;
-        this.is_invalid = false;
-      }
-    }
-  },
+  // watch: {
+    // data(value) {
+    //   if (!value) return;
+    //   this.name = value.name;
+    //   this.weight = value.weight;
+    //   this.description = value.description || "";
+    // },
+    // active(value) {
+    //   if (value) {
+    //     this.$v.name.$reset;
+    //     this.$v.$reset;
+    //     this.is_invalid = false;
+    //   }
+    // }
+  // },
   methods: {
     close() {
       this.$emit("close-modal");
@@ -115,6 +115,13 @@ export default {
       !this.$v.name.isUnique &&
         errors.push("Kolumna z podaną nazwą już istnieje.");
       return errors;
+    }
+  },
+  mounted () {
+    if (this.data) {
+      this.name = this.data.name;
+      this.weight = this.data.weight;
+      this.description = this.data.description || "";
     }
   },
   validations: {
