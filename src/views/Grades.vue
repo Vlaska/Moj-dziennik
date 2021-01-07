@@ -73,11 +73,7 @@
           ref="grades"
           @scroll="scrollTo($event, 'nameRow')"
         >
-          <div
-            v-for="(grade, idx) in grades"
-            :key="grade.name"
-            class="hoverable"
-          >
+          <div v-for="(grade, idx) in grades" :key="grade.name">
             <v-sheet
               outlined
               elevation="2"
@@ -86,12 +82,13 @@
               :student="i.student"
               :col="idx"
               :row="i.student - 1"
-              class="pa-2 d-flex justify-center align-center no-select hoverable"
+              class="pa-2 d-flex justify-center align-center no-select"
               :class="[
                 (current_grade !== 'pointer' && i.grade !== null) ||
                 (i.grade === null && current_grade !== 'trash')
                   ? 'clickable'
-                  : ''
+                  : '',
+                grade_colors[i.grade]
               ]"
               height="42"
               :width="width_of_grade_column"
@@ -100,11 +97,7 @@
               >{{ i.grade }}</v-sheet
             >
           </div>
-          <div
-            v-for="i in num_of_empty_cols"
-            :key="grades.length + i - 1"
-            class="hoverable"
-          >
+          <div v-for="i in num_of_empty_cols" :key="grades.length + i - 1">
             <v-sheet
               outlined
               elevation="2"
@@ -138,21 +131,22 @@
             <v-sheet
               outlined=""
               elevation="2"
-              class="final"
+              class="final d-flex justify-center align-center"
               v-for="(i, idx) in final_grades"
-              :key="i"
+              :key="'final-' + i.id"
               :row="idx"
               :col="grades.length + num_of_empty_cols"
-              :class="[
-                (current_grade !== 'pointer' && i !== null) ||
-                (i === null && current_grade !== 'trash')
-                  ? 'clickable'
-                  : ''
-              ]"
+              :class="{
+                clickable:
+                  (current_grade !== 'pointer' && i.grade !== null) ||
+                  (i.grade === null && current_grade !== 'trash'),
+                'not-final': !i.final
+              }"
               height="42"
               :width="width_of_grade_column"
               @mouseenter="mouse_in_cell($event)"
-              >{{ i }}</v-sheet
+              @mousedown="setFinalGrade($event)"
+              >{{ i.grade }}</v-sheet
             >
           </div>
         </div>
@@ -172,6 +166,56 @@
 // import axios from "axios";
 import Selector from "@/components/Selector";
 import $ from "jquery";
+
+// const GRADE_CONVERSION = {
+//     "1": 1,
+//     "2": 2,
+//     "3": 3,
+//     "4": 4,
+//     "5": 5,
+//     "6": 6,
+//     "-2": 1.75,
+//     "-3": 2.75,
+//     "-4": 3.75,
+//     "-5": 4.75,
+//     "=2": 1.5,
+//     "=3": 2.5,
+//     "=4": 3.5,
+//     "=5": 4.5,
+//     "+2": 2.25,
+//     "+3": 3.25,
+//     "+4": 4.25,
+//     "+5": 5.25,
+//     "+": null,
+//     "-": null,
+//     "N": null,
+//     "0": null,
+// }
+
+const ACCEPTED_FINAL_GRADES = {
+  1: true,
+  2: true,
+  3: true,
+  4: true,
+  5: true,
+  6: true,
+  "-2": false,
+  "-3": false,
+  "-4": false,
+  "-5": false,
+  "=2": false,
+  "=3": false,
+  "=4": false,
+  "=5": false,
+  "+2": false,
+  "+3": false,
+  "+4": false,
+  "+5": false,
+  "+": false,
+  "-": false,
+  N: false,
+  0: false
+};
 
 export default {
   data: () => ({
@@ -231,7 +275,7 @@ export default {
     $route: "fetchData",
     students: {
       deep: true,
-      handler: function () {
+      handler() {
         let key = `${this.$route.params.class_name}`;
         // if (!localStorage.getItem(key)) {
         localStorage.setItem(key, JSON.stringify(this.students));
@@ -240,19 +284,22 @@ export default {
     },
     grades: {
       deep: true,
-      handler: function () {
+      handler() {
         let key = `${this.$route.params.class_name}-${this.$route.params.subject}`;
         // if (!localStorage.getItem(key)) {
         localStorage.setItem(key, JSON.stringify(this.grades));
         // }
       }
     },
-    final_grades() {
-      if (!this.final_grades) {
-        this.final_grades = this.fillArray(null, this.students.length);
+    final_grades: {
+      deep: true,
+      handler() {
+        if (!this.final_grades) {
+          this.final_grades = this.initFinalGrades();
+        }
+        let key = `${this.$route.params.class_name}-${this.$route.params.subject}-finals`;
+        localStorage.setItem(key, JSON.stringify(this.final_grades));
       }
-      let key = `${this.$route.params.class_name}-${this.$route.params.subject}-final`;
-      localStorage.setItem(key, JSON.stringify(this.final_grades));
     },
     highlight_row(val, oldVal) {
       $(`*[row="${oldVal}"]`).removeClass("on-hover");
@@ -288,12 +335,10 @@ export default {
       }
 
       if (!(t = localStorage.getItem(final_grades_key))) {
-        this.final_grades = this.fillArray(null, this.students.length);
+        this.final_grades = this.initFinalGrades();
       } else {
         this.final_grades = JSON.parse(t);
       }
-
-      this.reset_data = false;
     },
     setCurrentGrade(grade) {
       this.current_grade = grade;
@@ -307,14 +352,29 @@ export default {
     setGrade(event) {
       if (this.current_grade === "pointer") return;
       let t = event.target;
-      let student = parseInt(t.getAttribute("student"));
-      let grade_column = parseInt(t.getAttribute("grade"));
+      let student = parseInt(t.getAttribute("row"));
+      let grade_column = parseInt(t.getAttribute("col"));
       if (this.current_grade === "trash") {
-        this.grades[grade_column].grades[student - 1].grade = null;
+        this.grades[grade_column].grades[student].grade = null;
       } else {
-        this.grades[grade_column].grades[
-          student - 1
-        ].grade = this.current_grade;
+        this.grades[grade_column].grades[student].grade = this.current_grade;
+      }
+    },
+    setFinalGrade(event) {
+      if (this.current_grade === "pointer") return;
+      let t = event.target;
+      let student = parseInt(t.getAttribute("row"));
+      if (this.current_grade === "trash") {
+        this.final_grades[student].grade = null;
+        this.final_grades[student].final = false;
+      } else {
+        if (!ACCEPTED_FINAL_GRADES[this.current_grade]) return;
+        if (this.current_grade == this.final_grades[student].grade) {
+          this.final_grades[student].final = true;
+        } else {
+          this.final_grades[student].final = false;
+        }
+        this.final_grades[student].grade = this.current_grade;
       }
     },
     resetData() {
@@ -326,10 +386,11 @@ export default {
       localStorage.removeItem(`${fetchClassName}-${fetchSubject}-final`);
       this.fetchData();
     },
-    fillArray(value, len) {
+    initFinalGrades() {
       let arr = [];
-      for (var i = 0; i < len; i++) {
-        arr.push(value);
+      let len = this.students.length;
+      for (let i = 0; i < len; i++) {
+        arr.push({ id: i + 1, grade: null, final: false });
       }
       return arr;
     },
@@ -443,13 +504,7 @@ export default {
   background-color: #ffcdd2 !important;
 }
 
-/* div.hoverable:hover,
-div.hoverable:hover > * {
-  background-color: #eeeeee !important;
+.not-final {
+  color: rgb(131, 131, 131) !important;
 }
-
-div.final-hoverable:hover,
-div.final-hoverable:hover > * {
-  background-color: #ffcdd2 !important;
-} */
 </style>
