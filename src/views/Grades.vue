@@ -21,6 +21,7 @@
         fluid
         class="grade-grid mb-10"
         @mouseleave="mouse_in_cell($event)"
+        @contextmenu.prevent="rightClick"
       >
         <div style="grid-area: ." @mouseenter="mouse_in_cell($event)"></div>
         <div style="grid-area: s">
@@ -52,12 +53,13 @@
               v-for="(grade, idx) in grades"
               :key="idx"
               :col="idx"
-              class="px-3 py-2 grade-name clickable cog"
+              class="px-3 py-2 grade-name clickable"
+              :class="{ cog: current_grade === 'pointer' }"
               :width="width_of_grade_column"
               :min-width="width_of_grade_column"
               :max-width="width_of_grade_column"
               @mouseenter="mouse_in_cell($event)"
-              @mousedown="openEditModal(idx)"
+              @mousedown="headerClicked(idx)"
             >
               <span class="d-flex align-center flex-column">
                 <span>{{ grade.name }}</span>
@@ -80,7 +82,7 @@
           </div>
         </div>
         <div
-          style="grid-area: g;"
+          style="grid-area: g"
           class="d-flex scrollable"
           ref="grades"
           @scroll="scrollTo($event, 'nameRow')"
@@ -94,6 +96,7 @@
               :student="i.student"
               :col="idx"
               :row="i.student - 1"
+              :id="idx + ',' + (i.student - 1)"
               class="pa-2 d-flex justify-center align-center no-select"
               :class="[
                 (current_grade !== 'pointer' && i.grade !== null) ||
@@ -171,7 +174,29 @@
       name="Oceny"
       :colors="grade_colors"
       @option-changed="gradeChanged"
+      :current-option="current_grade"
     ></selector>
+    <v-menu
+      absolute
+      v-model="showGradeSelectMenu"
+      :position-x="mouseX"
+      :position-y="mouseY"
+      offset-y
+    >
+      <v-sheet
+        max-width="fit-content"
+        outlined
+        rounded
+        color="indigo lighten-5"
+      >
+        <selector-menu
+          :current-option="current_grade"
+          :options="types_of_grades"
+          :colors="grade_colors"
+          @option-changed="gradeChanged"
+        ></selector-menu>
+      </v-sheet>
+    </v-menu>
     <v-btn @click="resetData" color="indigo" dark>Zresetuj dane</v-btn>
     <div ref="modalContainer">
       <component
@@ -188,6 +213,7 @@
 import Selector from "@/components/Selector";
 import EditColDialog from "@/components/EditColDialog";
 import ColumnDoesntExist from "@/components/ColumnDoesntExist";
+import SelectorMenu from "@/components/SelectorMenu";
 import $ from "jquery";
 
 // const GRADE_CONVERSION = {
@@ -290,7 +316,10 @@ export default {
     editing_column: null,
     modal: "",
     show_modal: false,
-    modal_data: {}
+    modal_data: {},
+    showGradeSelectMenu: false,
+    mouseX: 0,
+    mouseY: 0
   }),
   created() {
     this.fetchData();
@@ -378,6 +407,7 @@ export default {
       this.current_grade = value;
     },
     setGrade(event) {
+      if (event.button === 2) return;
       if (this.current_grade === "pointer") return;
       let t = event.target;
       let student = parseInt(t.getAttribute("row"));
@@ -520,6 +550,30 @@ export default {
       } else {
         this.addNewGradeColumn(data);
       }
+    },
+    headerClicked(idx) {
+      if (this.current_grade === "pointer") {
+        this.openEditModal(idx);
+      } else if (this.current_grade === "trash") {
+        for (let i of this.grades[idx].grades) {
+          i.grade = null;
+        }
+        return;
+      } else {
+        for (let i of this.grades[idx].grades) {
+          if (i.grade === null) {
+            i.grade = this.current_grade;
+          }
+        }
+      }
+    },
+    rightClick(event) {
+      this.current_grade = "pointer";
+      this.mouseX = event.clientX;
+      this.mouseY = event.clientY;
+      // this.$nextTick(() => {
+        this.showGradeSelectMenu = true;
+      // });
     }
   },
   computed: {
@@ -538,7 +592,7 @@ export default {
   beforeDestroy: function () {
     window.removeEventListener("resize", this.calc_num_of_empty_columns);
   },
-  components: { Selector, EditColDialog, ColumnDoesntExist }
+  components: { Selector, EditColDialog, ColumnDoesntExist, SelectorMenu }
 };
 </script>
 
