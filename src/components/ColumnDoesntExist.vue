@@ -1,5 +1,5 @@
 <template>
-  <v-dialog persistent v-model="active" max-width="700">
+  <v-dialog v-model="active" max-width="700">
     <v-card>
       <v-card-title class="headline"
         >Kolumna nie jest zdefiniowana</v-card-title

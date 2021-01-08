@@ -5,9 +5,6 @@ import Login from "../views/Login.vue";
 import MainPage from "../views/MainPage.vue";
 import ClassPage from "../views/ClassPage.vue";
 import Grades from "../views/Grades.vue";
-import {
-  publicPath
-} from "../../vue.config";
 
 Vue.use(VueRouter);
 
@@ -44,8 +41,7 @@ const routes = [{
 
 const router = new VueRouter({
   routes,
-  mode: "hash",
-  base: publicPath
+  mode: "hash"
 });
 
 // router.beforeEach((to, from, next) => {

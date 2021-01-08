@@ -140,6 +140,7 @@
             :width="width_of_grade_column"
             :col="grades.length + num_of_empty_cols"
             @mouseenter="mouse_in_cell($event)"
+            @mousedown="showFinalGradesSettings"
             ><span>Ocena końcowa</span></v-sheet
           >
         </div>
@@ -216,6 +217,7 @@ import ColumnDoesntExist from "@/components/ColumnDoesntExist";
 import SelectorMenu from "@/components/SelectorMenu";
 import GradeNotAcceptedModal from "@/components/GradeNotAcceptedModal";
 import DeleteAllGradesInColumnModal from "@/components/DeleteAllGradesInColumnModal";
+import FinalGradeModal from "@/components/FinalGradeModal";
 import $ from "jquery";
 
 // const GRADE_CONVERSION = {
@@ -314,14 +316,15 @@ export default {
     scroll_pos: 0,
     highlight_row: null,
     highlight_col: null,
-    edit_modal_open: false,
     editing_column: null,
     modal: "",
     show_modal: false,
     modal_data: {},
     showGradeSelectMenu: false,
     mouseX: 0,
-    mouseY: 0
+    mouseY: 0,
+    final_grade_alg: "wa",
+    calc_final_grades: false
   }),
   created() {
     this.fetchData();
@@ -332,6 +335,8 @@ export default {
   },
   watch: {
     $route: "fetchData",
+    final_grade_alg: "saveFinalGradeSettings",
+    calc_final_grades: "saveFinalGradeSettings",
     students: {
       deep: true,
       handler() {
@@ -372,6 +377,16 @@ export default {
     }
   },
   methods: {
+    saveFinalGradeSettings() {
+      let settings_key = `${this.$route.params.class_name}-${this.$route.params.subject}-settings`;
+      localStorage.setItem(
+        settings_key,
+        JSON.stringify({
+          final_grade_alg: this.final_grade_alg,
+          calc_final_grades: this.calc_final_grades
+        })
+      );
+    },
     fetchData() {
       this.error = this.post = null;
       this.loading = true;
@@ -380,6 +395,7 @@ export default {
       let students_key = `${fetchClassName}`;
       let grades_key = `${fetchClassName}-${fetchSubject}`;
       let final_grades_key = `${fetchClassName}-${fetchSubject}-finals`;
+      let final_grades_settings = `${fetchClassName}-${fetchSubject}-settings`;
       let t;
       if (!(t = localStorage.getItem(students_key))) {
         this.students = require(`@/klasy/${fetchClassName}/${fetchClassName}.json`);
@@ -398,6 +414,15 @@ export default {
       } else {
         this.final_grades = JSON.parse(t);
       }
+
+      if (!(t = localStorage.getItem(final_grades_settings))) {
+        this.final_grade_alg = "wa";
+        this.calc_final_grades = false;
+      } else {
+        t = JSON.parse(t);
+        this.final_grade_alg = t.final_grade_alg;
+        this.calc_final_grades = t.calc_final_grades;
+      }
     },
     setCurrentGrade(grade) {
       this.current_grade = grade;
@@ -409,7 +434,7 @@ export default {
       this.current_grade = value;
     },
     setGrade(event) {
-      if (event.button === 2) return;
+      if (event.button === 2 || event.button === 1) return;
       if (this.current_grade === "pointer") return;
       let t = event.target;
       let student = parseInt(t.getAttribute("row"));
@@ -421,7 +446,7 @@ export default {
       }
     },
     setFinalGrade(event, grade) {
-      if (event && event.button === 2) return;
+      if ((event && event.button === 2) || event.button === 1) return;
       if (this.current_grade === "pointer" && grade === undefined) return;
       if (grade === undefined) {
         grade = this.current_grade;
@@ -451,6 +476,8 @@ export default {
       localStorage.removeItem(`${fetchClassName}`);
       localStorage.removeItem(`${fetchClassName}-${fetchSubject}`);
       localStorage.removeItem(`${fetchClassName}-${fetchSubject}-final`);
+      localStorage.removeItem(`${fetchClassName}-${fetchSubject}-settings`);
+
       this.fetchData();
       this.calc_num_of_empty_columns();
     },
@@ -506,7 +533,7 @@ export default {
     },
     // eslint-disable-next-line no-unused-vars
     openEditModal(edit_col, event) {
-      if (event && event.button === 2) return;
+      if ((event && event.button === 2) || event.button === 1) return;
       if (edit_col) {
         this.editing_column = this.grades[edit_col];
       }
@@ -522,17 +549,15 @@ export default {
       this.modal = "edit-col-dialog";
     },
     undefinedColumn(event) {
-      if (event.button === 2) return;
+      if (event.button === 2 || event.button === 1) return;
 
       this.show_modal = true;
-      let closeModal = this.closeModal;
-      let openEditModal = this.openEditModal;
       this.modal_data = {
         active: this.show_modal,
-        onSave() {
-          closeModal();
-          openEditModal();
-        }
+        onSave: function () {
+          this.closeModal();
+          this.openEditModal();
+        }.bind(this)
       };
       this.modal = "column-doesnt-exist";
     },
@@ -543,6 +568,21 @@ export default {
         colors: this.grade_colors
       };
       this.modal = "grade-not-accepted-modal";
+    },
+    showFinalGradesSettings() {
+      this.show_modal = true;
+
+      this.modal_data = {
+        active: this.show_modal,
+        weight: this.final_grade_alg,
+        calculate: this.calc_final_grades,
+        onSave: function (weight, calc) {
+          this.final_grade_alg = weight;
+          this.calc_final_grades = calc;
+          this.closeModal();
+        }.bind(this)
+      };
+      this.modal = "final-grade-modal";
     },
     closeModal() {
       this.show_modal = false;
@@ -572,7 +612,7 @@ export default {
       }
     },
     headerClicked(event, idx) {
-      if (event.button === 2) return;
+      if (event.button === 2 || event.button === 1) return;
       if (this.current_grade === "pointer") {
         this.openEditModal(idx);
       } else if (this.current_grade === "trash") {
@@ -600,9 +640,7 @@ export default {
       this.current_grade = "pointer";
       this.mouseX = event.clientX;
       this.mouseY = event.clientY;
-      // this.$nextTick(() => {
       this.showGradeSelectMenu = true;
-      // });
     }
   },
   computed: {
@@ -627,7 +665,8 @@ export default {
     ColumnDoesntExist,
     SelectorMenu,
     GradeNotAcceptedModal,
-    DeleteAllGradesInColumnModal
+    DeleteAllGradesInColumnModal,
+    FinalGradeModal
   }
 };
 </script>
