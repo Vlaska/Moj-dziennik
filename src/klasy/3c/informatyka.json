@@ -2,6 +2,7 @@
     {
         "name": "Aktywno\u015b\u0107 1",
         "weight": 15,
+        "description": "",
         "grades": [
             {
                 "student": 1,
@@ -136,6 +137,7 @@
     {
         "name": "Aktywno\u015b\u0107 2",
         "weight": 15,
+        "description": "",
         "grades": [
             {
                 "student": 1,
@@ -270,6 +272,7 @@
     {
         "name": "Odpowied\u017a ustna 1",
         "weight": 50,
+        "description": "",
         "grades": [
             {
                 "student": 1,
@@ -404,6 +407,7 @@
     {
         "name": "Sprawdzian 1",
         "weight": 80,
+        "description": "",
         "grades": [
             {
                 "student": 1,

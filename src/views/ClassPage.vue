@@ -27,27 +27,27 @@ export default {
       {
         text: "Oceny",
         url: { name: "grades" },
-        image: "https://via.placeholder.com/150"
+        image: require("@/assets/icons/png/002-best-5.png")
       },
       {
         text: "Obecności",
         url: "#",
-        image: "https://via.placeholder.com/150"
+        image: require("@/assets/icons/png/008-pixels.png")
       },
       {
         text: "Statystyki",
         url: "#",
-        image: "https://via.placeholder.com/150"
+        image: require("@/assets/icons/png/001-analytics.png")
       },
       {
         text: "Uwagi",
         url: "#",
-        image: "https://via.placeholder.com/150"
+        image: require("@/assets/icons/png/004-exclamation-mark.png")
       },
       {
         text: "Powrót",
         url: { name: "mainPage" },
-        image: "https://via.placeholder.com/150"
+        image: require("@/assets/icons/png/003-left-arrow.png")
       }
     ]
   }),

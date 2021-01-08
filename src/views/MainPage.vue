@@ -23,22 +23,22 @@ export default {
       {
         text: "Plan zajęć",
         url: "#",
-        image: "https://via.placeholder.com/150"
+        image: require("@/assets/icons/png/appointment.png")
       },
       {
         text: "Wiadomości",
         url: "#",
-        image: "https://via.placeholder.com/150"
+        image: require("@/assets/icons/png/005-chat.png")
       },
       {
         text: "Ustawienia",
         url: "#",
-        image: "https://via.placeholder.com/150"
+        image: require("@/assets/icons/png/006-settings.png")
       },
       {
         text: "Wyloguj",
         url: "#",
-        image: "https://via.placeholder.com/150"
+        image: require("@/assets/icons/png/007-logout.png")
       }
     ]
   }),

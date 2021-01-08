@@ -47,24 +47,46 @@
           @scroll="scrollTo($event, 'grades')"
         >
           <div width="fit-content" class="d-flex flex-row">
-            <v-sheet
-              outlined
-              elevation="2"
-              v-for="(grade, idx) in grades"
-              :key="idx"
-              :col="idx"
-              class="px-3 py-2 grade-name clickable"
-              :class="{ cog: current_grade === 'pointer' }"
-              :width="width_of_grade_column"
-              :min-width="width_of_grade_column"
-              :max-width="width_of_grade_column"
-              @mouseenter="mouse_in_cell($event)"
-              @mousedown="headerClicked($event, idx)"
-            >
-              <span class="d-flex align-center flex-column">
-                <span>{{ grade.name }}</span>
-              </span>
-            </v-sheet>
+            <div v-for="(grade, idx) in grades" :key="idx">
+              <v-sheet
+                v-if="grade.description"
+                outlined
+                :content="grade.name + '<br/>' + grade.description"
+                v-tippy
+                elevation="2"
+                :col="idx"
+                class="px-3 py-2 grade-name clickable"
+                :class="{ cog: current_grade === 'pointer' }"
+                height="100%"
+                :width="width_of_grade_column"
+                :min-width="width_of_grade_column"
+                :max-width="width_of_grade_column"
+                @mouseenter="mouse_in_cell($event)"
+                @mousedown="headerClicked($event, idx)"
+              >
+                <span class="d-flex align-center flex-column">
+                  <span>{{ grade.name }}</span>
+                </span>
+              </v-sheet>
+              <v-sheet
+                v-else
+                outlined
+                elevation="2"
+                :col="idx"
+                class="px-3 py-2 grade-name clickable"
+                :class="{ cog: current_grade === 'pointer' }"
+                height="100%"
+                :width="width_of_grade_column"
+                :min-width="width_of_grade_column"
+                :max-width="width_of_grade_column"
+                @mouseenter="mouse_in_cell($event)"
+                @mousedown="headerClicked($event, idx)"
+              >
+                <span class="d-flex align-center flex-column">
+                  <span>{{ grade.name }}</span>
+                </span>
+              </v-sheet>
+            </div>
             <v-sheet
               outlined
               elevation="2"
@@ -218,6 +240,7 @@ import SelectorMenu from "@/components/SelectorMenu";
 import GradeNotAcceptedModal from "@/components/GradeNotAcceptedModal";
 import DeleteAllGradesInColumnModal from "@/components/DeleteAllGradesInColumnModal";
 import FinalGradeModal from "@/components/FinalGradeModal";
+import { tippy } from "vue-tippy";
 import $ from "jquery";
 
 const GRADE_CONVERSION = {
@@ -725,7 +748,8 @@ export default {
     SelectorMenu,
     GradeNotAcceptedModal,
     DeleteAllGradesInColumnModal,
-    FinalGradeModal
+    FinalGradeModal,
+    tippy
   }
 };
 </script>
