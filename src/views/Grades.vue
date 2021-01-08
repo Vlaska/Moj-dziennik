@@ -220,30 +220,31 @@ import DeleteAllGradesInColumnModal from "@/components/DeleteAllGradesInColumnMo
 import FinalGradeModal from "@/components/FinalGradeModal";
 import $ from "jquery";
 
-// const GRADE_CONVERSION = {
-//     "1": 1,
-//     "2": 2,
-//     "3": 3,
-//     "4": 4,
-//     "5": 5,
-//     "6": 6,
-//     "-2": 1.75,
-//     "-3": 2.75,
-//     "-4": 3.75,
-//     "-5": 4.75,
-//     "=2": 1.5,
-//     "=3": 2.5,
-//     "=4": 3.5,
-//     "=5": 4.5,
-//     "+2": 2.25,
-//     "+3": 3.25,
-//     "+4": 4.25,
-//     "+5": 5.25,
-//     "+": null,
-//     "-": null,
-//     "N": null,
-//     "0": null,
-// }
+const GRADE_CONVERSION = {
+  1: 1,
+  2: 2,
+  3: 3,
+  4: 4,
+  5: 5,
+  6: 6,
+  "2-": 1.75,
+  "3-": 2.75,
+  "4-": 3.75,
+  "5-": 4.75,
+  "2=": 1.5,
+  "3=": 2.5,
+  "4=": 3.5,
+  "5=": 4.5,
+  "2+": 2.25,
+  "3+": 3.25,
+  "4+": 4.25,
+  "5+": 5.25,
+  "+": null,
+  "-": null,
+  N: null,
+  0: null,
+  null: null
+};
 
 const ACCEPTED_FINAL_GRADES = {
   1: true,
@@ -252,18 +253,18 @@ const ACCEPTED_FINAL_GRADES = {
   4: true,
   5: true,
   6: true,
-  "-2": false,
-  "-3": false,
-  "-4": false,
-  "-5": false,
-  "=2": false,
-  "=3": false,
-  "=4": false,
-  "=5": false,
-  "+2": false,
-  "+3": false,
-  "+4": false,
-  "+5": false,
+  "2-": false,
+  "3-": false,
+  "4-": false,
+  "5-": false,
+  "2=": false,
+  "3=": false,
+  "4=": false,
+  "5=": false,
+  "2+": false,
+  "3+": false,
+  "4+": false,
+  "5+": false,
   "+": false,
   "-": false,
   N: false,
@@ -353,6 +354,9 @@ export default {
         // if (!localStorage.getItem(key)) {
         localStorage.setItem(key, JSON.stringify(this.grades));
         // }
+        if (this.calc_final_grades) {
+          this.calcAllFinalGrades();
+        }
       }
     },
     final_grades: {
@@ -386,6 +390,9 @@ export default {
           calc_final_grades: this.calc_final_grades
         })
       );
+      if (this.calc_final_grades) {
+        this.calcAllFinalGrades();
+      }
     },
     fetchData() {
       this.error = this.post = null;
@@ -433,9 +440,59 @@ export default {
     gradeChanged(value) {
       this.current_grade = value;
     },
+    averate_weighted(student_id) {
+      let weights = 0;
+      let grade_sum = 0;
+
+      let grade;
+      let weight;
+      for (let j of this.grades) {
+        grade = GRADE_CONVERSION[j.grades[student_id].grade];
+        if (grade === null) continue;
+        weight = j.weight;
+        weights += weight;
+        grade_sum += grade * weight;
+      }
+
+      if (weight !== 0) {
+        return Math.round(grade_sum / weights);
+      }
+      return 1;
+    },
+    averate_arythmetic(student_idx) {
+      let grade_sum = 0;
+      let num_of_grades = 0;
+
+      let grade;
+      for (let j of this.grades) {
+        grade = GRADE_CONVERSION[j.grades[student_idx].grade];
+        if (grade === null) continue;
+        ++num_of_grades;
+        grade_sum += grade;
+      }
+
+      if (num_of_grades !== 0) {
+        return Math.round(grade_sum / num_of_grades);
+      }
+      return 1;
+    },
+    calcAllFinalGrades() {
+      let calc =
+        this.final_grade_alg === "wa"
+          ? this.averate_weighted
+          : this.averate_arythmetic;
+      for (let i = 0; i < this.students.length; ++i) {
+        if (this.final_grades[i].fianl) continue;
+        this.final_grades[i].grade = calc(i);
+      }
+    },
     setGrade(event) {
-      if (event.button === 2 || event.button === 1) return;
-      if (this.current_grade === "pointer") return;
+      if (
+        event.button === 2 ||
+        event.button === 1 ||
+        this.current_grade === "pointer"
+      )
+        return;
       let t = event.target;
       let student = parseInt(t.getAttribute("row"));
       let grade_column = parseInt(t.getAttribute("col"));
@@ -446,7 +503,8 @@ export default {
       }
     },
     setFinalGrade(event, grade) {
-      if ((event && event.button === 2) || event.button === 1) return;
+      if (event && event.button && (event.button === 2 || event.button === 1))
+        return;
       if (this.current_grade === "pointer" && grade === undefined) return;
       if (grade === undefined) {
         grade = this.current_grade;
@@ -475,7 +533,7 @@ export default {
 
       localStorage.removeItem(`${fetchClassName}`);
       localStorage.removeItem(`${fetchClassName}-${fetchSubject}`);
-      localStorage.removeItem(`${fetchClassName}-${fetchSubject}-final`);
+      localStorage.removeItem(`${fetchClassName}-${fetchSubject}-finals`);
       localStorage.removeItem(`${fetchClassName}-${fetchSubject}-settings`);
 
       this.fetchData();
@@ -533,7 +591,8 @@ export default {
     },
     // eslint-disable-next-line no-unused-vars
     openEditModal(edit_col, event) {
-      if ((event && event.button === 2) || event.button === 1) return;
+      if (event && event.button && (event.button === 2 || event.button === 1))
+        return;
       if (edit_col) {
         this.editing_column = this.grades[edit_col];
       }
