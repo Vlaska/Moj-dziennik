@@ -7,10 +7,10 @@
       </p>
     </v-row>
     <v-row class="d-flex flex-sm-row flex-column-reverse justify-center">
-      <v-col col="12" md="6">
+      <v-col col="12" xl="3" lg="4" md="6">
         <page-menu :pages="pages"></page-menu>
       </v-col>
-      <v-col col="12" md="5">
+      <v-col col="12" xl="3" md="5">
         <subjects></subjects>
       </v-col>
     </v-row>
