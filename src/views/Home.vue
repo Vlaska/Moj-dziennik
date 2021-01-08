@@ -4,6 +4,8 @@
     <div class="d-flex flex-column justify-center align-center mt-10">
       <router-link :to="{ name: 'login' }">Logowanie</router-link>
       <router-link :to="{ name: 'mainPage' }">Strona główna</router-link>
+      <router-link :to="{ name: 'resetPassword' }">Reset hasła</router-link>
+      <router-link :to="{ name: 'resetPasswordEmail' }">Reset hasła - adres z poczty</router-link>
     </div>
   </div>
 </template>
