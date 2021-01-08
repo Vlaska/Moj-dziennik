@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h1 class="text-center mt-6">Logowanie</h1>
+    <div class="d-flex justify-center mt-10">
+      <p class="display-2">Logowanie</p>
+    </div>
     <login></login>
   </div>
 </template>

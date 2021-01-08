@@ -21,10 +21,15 @@
         </v-breadcrumbs>
       </div>
       <v-spacer></v-spacer>
-      <router-link :to="{ name: 'login' }" v-if="!user_logged">
+      <router-link :to="{ name: 'login' }" v-if="!loggedIn()">
         <v-btn>Zaloguj</v-btn>
       </router-link>
-      <div class="d-flex align-center" v-else><span>Witaj</span></div>
+      <div class="d-flex align-center" v-else>
+        <span>Witaj: <span class="font-weight-bold mr-5">Jan Kowalski</span></span>
+        <router-link :to="{ name: 'logout' }">
+          <v-btn text>Wyloguj</v-btn>
+        </router-link>
+      </div>
     </v-app-bar>
     <v-main>
       <router-view></router-view>
@@ -61,7 +66,12 @@ export default {
       // }
     ],
     user_logged: false
-  })
+  }),
+  methods: {
+    loggedIn() {
+      return this.$store.state.loggedIn;
+    }
+  }
 };
 </script>
 
@@ -75,4 +85,5 @@ body {
 // <style lang="scss">
 // $material-design-icons-font-directory-path: "~material-design-icons-iconfont/dist/fonts/";
 // @import "~material-design-icons-iconfont/src/material-design-icons";
-// </style>
+//
+</style>

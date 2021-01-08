@@ -37,7 +37,7 @@ export default {
       },
       {
         text: "Wyloguj",
-        url: "#",
+        url: { name: "logout" },
         image: require("@/assets/icons/png/007-logout.png")
       }
     ]

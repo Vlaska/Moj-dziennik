@@ -2,6 +2,8 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
+import Logout from "../views/Logout.vue";
+import TwoStepVer from "../views/TwoStepVer.vue";
 import MainPage from "../views/MainPage.vue";
 import ClassPage from "../views/ClassPage.vue";
 import Grades from "../views/Grades.vue";
@@ -17,6 +19,16 @@ const routes = [{
     path: "/login",
     name: "login",
     component: Login
+  },
+  {
+    path: "/logout",
+    name: "logout",
+    component: Logout
+  },
+  {
+    path: "/login/2sv",
+    name: "2sv",
+    component: TwoStepVer
   },
   {
     path: "/main",
@@ -39,14 +51,25 @@ const routes = [{
   }
 ];
 
+const LOGIN_REQUIRED = {
+  mainPage: true,
+  classPage: true,
+  grades: true
+};
+
 const router = new VueRouter({
   routes,
   mode: "hash"
 });
 
-// router.beforeEach((to, from, next) => {
-//   document.title = "Mój Dziennik";
-//   next();
-// });
+router.beforeEach((to, from, next) => {
+  if (LOGIN_REQUIRED[to.name] && localStorage.getItem("loggedIn") !== "true") {
+    next({
+      name: "login"
+    })
+  } else {
+    next();
+  }
+});
 
 export default router;

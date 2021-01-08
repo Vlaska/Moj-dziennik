@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="mt-6">
     <v-form @submit.prevent class="d-flex justify-center">
       <v-col cols="12" sm="8">
         <v-row>
@@ -7,24 +7,23 @@
             v-model="username"
             label="Nazwa użytkownika"
             required
+            outlined
             autocomplete="username"
+            @keydown.enter="submit"
             :error-messages="usernameErrors"
-            @input="$v.username.$touch()"
-          >
-            @blur="$v.username.$touch()" ></v-text-field
-          >
+          ></v-text-field>
         </v-row>
-        <v-row>
+        <v-row class="mt-4">
           <v-text-field
             v-model="password"
             label="Hasło"
             required
+            outlined
             :type="showPassword ? 'text' : 'password'"
             autocomplete="current-password"
             :error-messages="passwordErrors"
-            @input="$v.password.$touch()"
-            @blur="$v.password.$touch()"
             @click:append="showPassword = !showPassword"
+            @keydown.enter="submit"
             :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             hint="Hasło musi być długości od 8 do 30 znaków oraz posiadać po jednej: dużej literze, małej literze, cyfrze, znaku specjalnym: #$@!%\&*?."
           ></v-text-field>
@@ -51,7 +50,9 @@ export default {
   data: () => ({
     username: "",
     password: "",
-    showPassword: false
+    showPassword: false,
+    valid_username: "jkowalski",
+    valid_password: "Kowalski!23"
   }),
   validations: {
     username: { required },
@@ -72,11 +73,14 @@ export default {
       if (!this.$v.username.$dirty) return errors;
       !this.$v.username.required &&
         errors.push("Nazwa użytkownika jest wymagana.");
+      this.username !== this.valid_username &&
+        errors.push("Użytkownik o podanej nazwie nie istnieje.");
+      this.$v.username.$reset();
       return errors;
     },
     passwordErrors() {
       const errors = [];
-      if (!this.$v.password.$dirty) return errors;
+      if (!this.$v.password.$dirty || this.$v.username) return errors;
       !this.$v.password.required && errors.push("Hasło jest wymagane.");
       !this.$v.password.minLength &&
         errors.push("Hasło musi składać się z conajmniej 8 znaków.");
@@ -86,7 +90,20 @@ export default {
         errors.push(
           "Hasło musi posiadać po jednej: dużej literze, małej literze, cyfrze, znaku specjalnym: #$@!%&*?."
         );
+      this.username === this.valid_username &&
+        this.password !== this.valid_password &&
+        errors.push("Hasło nie jest poprawne.");
+      this.$v.password.$reset();
       return errors;
+    }
+  },
+  methods: {
+    submit() {
+      this.$v.username.$touch();
+      this.$v.password.$touch();
+
+      if (this.$v.$invalid) return;
+      this.$router.push({ name: "2sv" });
     }
   }
 };
