@@ -105,7 +105,10 @@ export default {
     },
     submit() {
       this.$v.code.$touch();
-      if (this.$v.$invalid) return;
+      if (this.$v.$invalid) {
+        this.code = "";
+        return;
+      }
       this.$store.commit("logIn");
       this.$router.push({ name: "mainPage" });
     }

@@ -1,4 +1,6 @@
-# dziennik
+# Mój Dziennik
+
+[Działająca strona](https://vlaska.github.io/Moj-dziennik/)
 
 ### Logowanie
 

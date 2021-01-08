@@ -35,7 +35,11 @@
       </v-col>
     </v-form>
     <div class="text-center mt-5">
-      <p><router-link to="#">Nie pamiętam hasła.</router-link></p>
+      <p>
+        <router-link :to="{ name: 'resetPassword' }"
+          >Nie pamiętam hasła.</router-link
+        >
+      </p>
     </div>
   </v-container>
 </template>
@@ -102,7 +106,10 @@ export default {
       this.$v.username.$touch();
       this.$v.password.$touch();
 
-      if (this.$v.$invalid) return;
+      if (this.$v.$invalid) {
+        this.password = "";
+        return;
+      }
       this.$router.push({ name: "2sv" });
     }
   }

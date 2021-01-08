@@ -4,6 +4,8 @@ import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import Logout from "../views/Logout.vue";
 import TwoStepVer from "../views/TwoStepVer.vue";
+import ResetPassword from "../views/ResetPassword.vue";
+import ResetPasswordEmail from "../views/ResetPasswordEmail.vue";
 import MainPage from "../views/MainPage.vue";
 import ClassPage from "../views/ClassPage.vue";
 import Grades from "../views/Grades.vue";
@@ -29,6 +31,16 @@ const routes = [{
     path: "/login/2sv",
     name: "2sv",
     component: TwoStepVer
+  },
+  {
+    path: "/login/reset",
+    name: "resetPassword",
+    component: ResetPassword
+  },
+  {
+    path: "/login/reset/email",
+    name: "resetPasswordEmail",
+    component: ResetPasswordEmail
   },
   {
     path: "/main",
