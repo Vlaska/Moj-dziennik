@@ -1,8 +1,6 @@
 <template>
   <div>
-    <div class="d-flex justify-center mt-10">
-      <p class="display-2">Weryfikacja dwuetapowa</p>
-    </div>
+    <title-of-page :prevBtn="false" title="Weryfikacja dwuetapowa" />
     <v-container>
       <v-form @submit.prevent class="d-flex justify-center">
         <v-col cols="12" sm="8">
@@ -55,6 +53,7 @@ import {
   maxLength,
   numeric
 } from "vuelidate/lib/validators";
+import TitleOfPage from "../components/TitleOfPage.vue";
 
 export default {
   mixins: [validationMixin],
@@ -112,6 +111,7 @@ export default {
       this.$store.commit("logIn");
       this.$router.push({ name: "mainPage" });
     }
-  }
+  },
+  components: { TitleOfPage }
 };
 </script>

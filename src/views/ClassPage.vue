@@ -1,11 +1,11 @@
 <template>
   <v-container>
-    <v-row class="d-flex justify-center mt-10 mb-5">
-      <p class="display-2">
-        Klasa {{ class_name($route.params.class_name) }} &mdash;
-        {{ subject_codes[$route.params.subject] }}
-      </p>
-    </v-row>
+    <title-of-page
+      :prevBtn="false"
+      :title="`Klasa ${class_name($route.params.class_name)} — ${
+        subject_codes[$route.params.subject]
+      }`"
+    />
     <v-row class="d-flex flex-sm-row flex-column-reverse justify-center">
       <v-col col="12" xl="3" lg="4" md="6">
         <page-menu :pages="pages"></page-menu>
@@ -20,6 +20,7 @@
 <script>
 import Subjects from "@/components/Subjects";
 import PageMenu from "@/components/PageMenu";
+import TitleOfPage from '@/components/TitleOfPage.vue';
 export default {
   name: "ClassPage",
   data: () => ({
@@ -72,7 +73,8 @@ export default {
   },
   components: {
     Subjects,
-    PageMenu
+    PageMenu,
+    TitleOfPage
   }
 };
 </script>

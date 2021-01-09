@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <title-of-page title="Wiadomości" />
     <!-- <v-form class="d-flex justify-center" @submit.prevent>
       <v-col cols="12" sm="8">
         <v-row>
@@ -18,5 +19,9 @@
 </template>
 
 <script>
-export default {};
+import TitleOfPage from "@/components/TitleOfPage.vue";
+
+export default {
+  components: { TitleOfPage }
+};
 </script>

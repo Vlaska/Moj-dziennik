@@ -1,18 +1,18 @@
 <template>
   <div>
-    <div class="d-flex justify-center mt-10">
-      <p class="display-2">Logowanie</p>
-    </div>
+    <title-of-page :prevBtn="false" title="Logowanie"/>
     <login></login>
   </div>
 </template>
 
 <script>
 import Login from "@/components/Login";
+import TitleOfPage from '../components/TitleOfPage.vue';
 
 export default {
   components: {
-    Login
+    Login,
+    TitleOfPage
   }
 };
 </script>

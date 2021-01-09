@@ -1,8 +1,6 @@
 <template>
   <div>
-    <div class="d-flex justify-center mt-10">
-      <p class="display-2">Reset hasła</p>
-    </div>
+    <title-of-page :prevBtn="false" title="Reset hasła" />
     <v-container>
       <v-form @submit.prevent class="d-flex justify-center">
         <v-col cols="12" sm="8">
@@ -40,8 +38,10 @@
 <script>
 import { validationMixin } from "vuelidate";
 import { required, email } from "vuelidate/lib/validators";
+import TitleOfPage from '@/components/TitleOfPage.vue';
 
 export default {
+  components: { TitleOfPage },
   mixins: [validationMixin],
   data: () => ({
     showMsg: false,

@@ -1,8 +1,6 @@
 <template>
   <v-container>
-    <v-row class="d-flex justify-center mt-10 mb-5">
-      <p class="display-2">Wylogowano</p>
-    </v-row>
+    <title-of-page :prevBtn="false" title="Wylogowano" />
     <v-row class="d-flex flex-sm-row flex-column-reverse justify-center mt-6">
       <v-col col="12" md="6">
         <p>Zostałeś wylogowany.</p>
@@ -16,9 +14,14 @@
 </template>
 
 <script>
+import TitleOfPage from "../components/TitleOfPage.vue";
+
 export default {
   mounted() {
     this.$store.commit("logOut");
+  },
+  components: {
+    TitleOfPage
   }
 };
 </script>

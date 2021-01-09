@@ -1,18 +1,12 @@
 <template>
   <v-container>
-    <v-row>
-      <prev-page-btn/>
-      <div
-        class="d-flex mt-10 mb-5 flex-column justify-center align-center"
-        style="width: 100%"
-      >
-        <p class="display-2">Oceny</p>
-        <p class="display-1">
-          Klasa {{ class_name($route.params.class_name) }} &mdash;
-          {{ subject_codes[$route.params.subject] }}
-        </p>
-      </div>
-    </v-row>
+    <title-of-page>
+      <p class="display-2">Oceny</p>
+      <p class="display-1">
+        Klasa {{ class_name($route.params.class_name) }} &mdash;
+        {{ subject_codes[$route.params.subject] }}
+      </p>
+    </title-of-page>
 
     <v-row class="d-flex justify-center">
       <v-container fluid class="d-flex justify-end my-2 py-0">
@@ -247,6 +241,7 @@ import GradeNotAcceptedModal from "@/components/GradeNotAcceptedModal";
 import DeleteAllGradesInColumnModal from "@/components/DeleteAllGradesInColumnModal";
 import FinalGradeModal from "@/components/FinalGradeModal";
 import PrevPageBtn from "@/components/PrevPageBtn";
+import TitleOfPage from "@/components/TitleOfPage.vue";
 import $ from "jquery";
 
 const GRADE_CONVERSION = {
@@ -755,7 +750,8 @@ export default {
     GradeNotAcceptedModal,
     DeleteAllGradesInColumnModal,
     FinalGradeModal,
-    PrevPageBtn
+    PrevPageBtn,
+    TitleOfPage
   }
 };
 </script>

@@ -9,7 +9,7 @@
       width="170"
     >
       <router-link :to="item.url">
-        <img :src="item.image" class="max pt-2 pb-4"/>
+        <img draggable="false" :src="item.image" class="max pt-2 pb-4"/>
         <span>{{ item.text }}</span>
       </router-link>
     </v-card>

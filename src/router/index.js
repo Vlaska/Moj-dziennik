@@ -10,6 +10,7 @@ import MainPage from "../views/MainPage.vue";
 import ClassPage from "../views/ClassPage.vue";
 import Grades from "../views/Grades.vue";
 import Notes from "../views/Notes.vue";
+import SendMessage from "../views/SendMessage.vue";
 import {
   class_name,
   subject_codes
@@ -151,6 +152,17 @@ const routes = [{
     meta: {
       breadCrumbs: [{
         name: "Uwagi"
+      }],
+      loginRequired: true
+    }
+  },
+  {
+    path: "/messegas",
+    name: "messages",
+    component: SendMessage,
+    meta: {
+      breadCrumbs: [{
+        name: "Wiadomości"
       }],
       loginRequired: true
     }
