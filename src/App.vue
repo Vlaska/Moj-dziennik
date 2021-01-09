@@ -107,6 +107,8 @@ export default {
       }
       if (this.path.length > 1) {
         this.$store.commit("setPrevPage", this.path[this.path.length - 2]);
+      } else {
+        this.$store.commit("setPrevPage", { link: { name: "mainPage" } });
       }
     }
   },
