@@ -26,6 +26,11 @@ export default {
         image: require("@/assets/icons/png/appointment.png")
       },
       {
+        text: "Uwagi",
+        url: { name: "notes" },
+        image: require("@/assets/icons/png/004-exclamation-mark.png")
+      },
+      {
         text: "Wiadomości",
         url: "#",
         image: require("@/assets/icons/png/005-chat.png")

@@ -9,65 +9,160 @@ import ResetPasswordEmail from "../views/ResetPasswordEmail.vue";
 import MainPage from "../views/MainPage.vue";
 import ClassPage from "../views/ClassPage.vue";
 import Grades from "../views/Grades.vue";
+import Notes from "../views/Notes.vue";
+import {
+  class_name,
+  subject_codes
+} from "../main";
+
+function getClassName(path) {
+  return `Klasa ${class_name(path.class_name)} — ${subject_codes[path.subject]}`;
+}
+
+function getClassLinkWithName(path, name) {
+  return {
+    name,
+    params: {
+      class_name: path.class_name,
+      subjcet: path.subject
+    }
+  };
+}
+
+// eslint-disable-next-line no-unused-vars
+function getGradeLink(path) {
+  return getClassLinkWithName(path, "grades");
+}
+
+function getClassLink(path) {
+  return getClassLinkWithName(path, "classPage");
+}
 
 Vue.use(VueRouter);
 
 const routes = [{
     path: "/",
     name: "Home",
-    component: Home
+    component: Home,
+    meta: {
+      breadCrumbs: []
+    }
   },
   {
     path: "/login",
     name: "login",
-    component: Login
+    component: Login,
+    meta: {
+      breadCrumbs: [{
+        name: "Logowanie"
+      }]
+    }
   },
   {
     path: "/logout",
     name: "logout",
-    component: Logout
+    component: Logout,
+    meta: {
+      breadCrumbs: [{
+        name: "Wylogowano"
+      }]
+    }
   },
   {
     path: "/login/2sv",
     name: "2sv",
-    component: TwoStepVer
+    component: TwoStepVer,
+    meta: {
+      breadCrumbs: [{
+          name: "Logowanie",
+          link: "login"
+        },
+        {
+          name: "Weryfikacja dwuetapowa"
+        }
+      ]
+    }
   },
   {
     path: "/login/reset",
     name: "resetPassword",
-    component: ResetPassword
+    component: ResetPassword,
+    meta: {
+      breadCrumbs: [{
+          name: "Logowanie",
+          link: "login"
+        },
+        {
+          name: "Resetowanie hasła"
+        }
+      ]
+    }
   },
   {
     path: "/login/reset/email",
     name: "resetPasswordEmail",
-    component: ResetPasswordEmail
+    component: ResetPasswordEmail,
+    meta: {
+      breadCrumbs: []
+    }
   },
   {
     path: "/main",
     name: "mainPage",
-    component: MainPage
+    component: MainPage,
+    meta: {
+      breadCrumbs: [],
+      loginRequired: []
+    }
   },
   {
     path: "/class/:class_name/:subject",
     name: "classPage",
-    component: ClassPage
+    component: ClassPage,
+    meta: {
+      breadCrumbs: [{
+        name: getClassName,
+        func: true
+      }],
+      loginRequired: true
+    }
   },
   {
     path: "/class/:class_name/:subject/grades",
     name: "grades",
-    component: Grades
+    component: Grades,
+    meta: {
+      breadCrumbs: [{
+          name: getClassName,
+          link: getClassLink,
+          func: true
+        },
+        {
+          name: "Oceny"
+        }
+      ],
+      loginRequired: true
+    }
+  },
+  {
+    path: "/notes/:class_name?",
+    name: "notes",
+    component: Notes,
+    meta: {
+      breadCrumbs: [{
+        name: "Uwagi"
+      }],
+      loginRequired: true
+    }
   },
   {
     path: "*",
-    redirect: "/"
+    redirect: "/",
+    meta: {
+      breadCrumbs: []
+    }
   }
 ];
-
-const LOGIN_REQUIRED = {
-  mainPage: true,
-  classPage: true,
-  grades: true
-};
 
 const router = new VueRouter({
   routes,
@@ -75,7 +170,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (LOGIN_REQUIRED[to.name] && localStorage.getItem("loggedIn") !== "true") {
+  if (to.meta.loginRequired && localStorage.getItem("loggedIn") !== "true") {
     next({
       name: "login"
     })

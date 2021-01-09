@@ -1,11 +1,17 @@
 <template>
   <v-container>
-    <v-row class="d-flex mt-10 mb-5 flex-column justify-center align-center">
-      <p class="display-2">Oceny</p>
-      <p class="display-1">
-        Klasa {{ class_name($route.params.class_name) }} &mdash;
-        {{ subject_codes[$route.params.subject] }}
-      </p>
+    <v-row>
+      <prev-page-btn/>
+      <div
+        class="d-flex mt-10 mb-5 flex-column justify-center align-center"
+        style="width: 100%"
+      >
+        <p class="display-2">Oceny</p>
+        <p class="display-1">
+          Klasa {{ class_name($route.params.class_name) }} &mdash;
+          {{ subject_codes[$route.params.subject] }}
+        </p>
+      </div>
     </v-row>
 
     <v-row class="d-flex justify-center">
@@ -240,7 +246,7 @@ import SelectorMenu from "@/components/SelectorMenu";
 import GradeNotAcceptedModal from "@/components/GradeNotAcceptedModal";
 import DeleteAllGradesInColumnModal from "@/components/DeleteAllGradesInColumnModal";
 import FinalGradeModal from "@/components/FinalGradeModal";
-import { tippy } from "vue-tippy";
+import PrevPageBtn from "@/components/PrevPageBtn";
 import $ from "jquery";
 
 const GRADE_CONVERSION = {
@@ -749,7 +755,7 @@ export default {
     GradeNotAcceptedModal,
     DeleteAllGradesInColumnModal,
     FinalGradeModal,
-    tippy
+    PrevPageBtn
   }
 };
 </script>

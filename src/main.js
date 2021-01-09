@@ -4,7 +4,9 @@ import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
 import Vuelidate from "vuelidate";
-import VueTippy, { TippyComponent } from "vue-tippy";
+import VueTippy, {
+  TippyComponent
+} from "vue-tippy";
 // Odkomentować, gdyby jQuery było potrzebne
 global.jQuery = require("jquery");
 let $ = global.jQuery;
@@ -13,17 +15,21 @@ window.$ = $;
 Vue.config.productionTip = false;
 Vue.use(Vuelidate);
 
+export function class_name(i) {
+  return "I".repeat(parseInt(i[0])) + i[1];
+}
+
+export const subject_codes = {
+  jpolski: "Język Polski",
+  informatyka: "Informatyka"
+};
+
 Vue.mixin({
   methods: {
-    class_name(i) {
-      return "I".repeat(parseInt(i[0])) + i[1];
-    }
+    class_name
   },
   data: () => ({
-    subject_codes: {
-      jpolski: "Język Polski",
-      informatyka: "Informatyka"
-    }
+    subject_codes
   })
 });
 

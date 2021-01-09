@@ -41,7 +41,7 @@ export default {
       },
       {
         text: "Uwagi",
-        url: "#",
+        url: { name: "notes", params: { class_name: "" } },
         image: require("@/assets/icons/png/004-exclamation-mark.png")
       },
       {
@@ -51,7 +51,25 @@ export default {
       }
     ]
   }),
-
+  mounted() {
+    this.updateNotePath();
+  },
+  methods: {
+    getClassName() {
+      return this.$route.params.class_name;
+    },
+    updateNotePath(class_name) {
+      let t = this.pages.filter((x) => x.text === "Uwagi")[0];
+      if (!class_name) class_name = this.getClassName();
+      t.url.params.class_name = class_name;
+    }
+  },
+  beforeRouteUpdate(to, from, next) {
+    if (to.name === "classPage") {
+      this.updateNotePath(to.params.class_name);
+    }
+    next();
+  },
   components: {
     Subjects,
     PageMenu

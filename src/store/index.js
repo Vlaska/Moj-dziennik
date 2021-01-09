@@ -6,7 +6,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     loggedIn: localStorage.getItem("loggedIn") === "true",
-    currentPassword: localStorage.getItem("currentPassword") || "Kowalski!23"
+    currentPassword: localStorage.getItem("currentPassword") || "Kowalski!23",
+    prevPage: ""
   },
   mutations: {
     logIn(state) {
@@ -20,6 +21,9 @@ export default new Vuex.Store({
     changePassword(state, newPassword) {
       state.currentPassword = newPassword;
       localStorage.setItem("currentPassword", newPassword);
+    },
+    setPrevPage(state, value) {
+      state.prevPage = value;
     }
   },
   actions: {},
