@@ -36,7 +36,9 @@
                     >Ukryj wszystkie uwagi</v-btn
                   >
                 </div>
-                <v-btn color="green" dark>Dodaj nową uwagę</v-btn>
+                <v-btn color="green" dark @click="addEditNote($event)"
+                  >Dodaj nową uwagę</v-btn
+                >
               </div>
               <v-expansion-panels multiple v-model="openedStudents" hover>
                 <v-expansion-panel v-for="i in studentsData" :key="i.value">
@@ -47,12 +49,6 @@
                   >
                   <v-expansion-panel-content class="body-2">
                     <template v-if="notes[i.value] && notes[i.value].length">
-                      <!-- <div
-                        v-for="(j, idx) in notes[i.value]"
-                        :key="i + ',' + idx"
-                      >
-                        <p>{{ j.text }}</p>
-                      </div> -->
                       <v-card
                         v-for="(j, idx) in notes[i.value]"
                         :key="i + ',' + idx"
@@ -73,6 +69,27 @@
                         <v-card-text class="grey--text text--darken-3">{{
                           j.text
                         }}</v-card-text>
+                        <template v-if="j.author === 'Jan Kowalski'"
+                          ><v-divider class="mx-4"></v-divider>
+                          <v-card-actions class="d-flex justify-end my-2 mr-4">
+                            <v-btn
+                              color="red"
+                              dark
+                              @click="removeNote($event)"
+                              :student="i.value"
+                              :note="idx"
+                              >Usuń</v-btn
+                            >
+                            <v-btn
+                              color="primary"
+                              dark
+                              @click="addEditNote($event)"
+                              :student="i.value"
+                              :note="idx"
+                              >Edytuj</v-btn
+                            >
+                          </v-card-actions>
+                        </template>
                       </v-card>
                     </template>
                     <div v-else>
@@ -83,6 +100,15 @@
                           ></v-card-text
                         >
                       </v-card>
+                    </div>
+                    <div class="d-flex justify-end mt-3">
+                      <v-btn
+                        color="green"
+                        dark
+                        :student="i.value"
+                        @click="addEditNote($event)"
+                        >Dodaj nową uwagę</v-btn
+                      >
                     </div>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
@@ -168,15 +194,18 @@ export default {
     none() {
       this.openningAll = false;
       this.openedStudents.sort();
-      this.openedStudents.reverse();
       let tmp = (() => {
         if (this.openedStudents.length === 0) return;
         if (this.openningAll) this.openningAll = false;
         this.openedStudents.pop();
-        setTimeout(tmp, 5);
+        setTimeout(tmp, 10);
       }).bind(this);
       tmp();
-    }
+    },
+    // eslint-disable-next-line no-unused-vars
+    addEditNote(event) {},
+    // eslint-disable-next-line no-unused-vars
+    removeNote(event) {}
   },
   mounted() {
     let initClass = this.$route.params.class_name;
