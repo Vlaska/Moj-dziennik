@@ -205,10 +205,21 @@ export default {
       this.openedStudents = [];
       this.studentsData = studentsData;
       this.filter = "";
-      this.notes = require(`../klasy/${this.selectedClass}/uwagi.json`);
+      this.notes =
+        JSON.parse(localStorage.getItem(`${this.selectedClass}-notes`)) ||
+        require(`../klasy/${this.selectedClass}/uwagi.json`);
     },
     filter: "filterStudents",
-    studentsData: "filterStudents"
+    studentsData: "filterStudents",
+    notes: {
+      deep: true,
+      handler() {
+        localStorage.setItem(
+          `${this.selectedClass}-notes`,
+          JSON.stringify(this.notes)
+        );
+      }
+    }
   },
   methods: {
     getSourceElementData(event) {
