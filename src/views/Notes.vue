@@ -52,7 +52,7 @@
                   <v-expansion-panel-header
                     class="body-1"
                     style="font-size: 20px; font-weight: 500"
-                    >{{ i.text }}</v-expansion-panel-header
+                    >{{ i.name }}</v-expansion-panel-header
                   >
                   <v-expansion-panel-content class="body-2">
                     <template v-if="notes[i.id] && notes[i.id].length">
@@ -183,7 +183,7 @@ export default {
       let studentsData = [];
       for (let i of this.students) {
         studentsData.push({
-          text: `${i.first_name} ${i.last_name}`,
+          name: `${i.first_name} ${i.last_name}`,
           id: i.id
         });
       }
@@ -202,7 +202,7 @@ export default {
       }
       let query = this.filter.toLowerCase();
       this.filterStudents = this.studentsData.filter((val) =>
-        val.text.toLocaleLowerCase().includes(query)
+        val.name.toLocaleLowerCase().includes(query)
       );
     },
     class_name(val) {
