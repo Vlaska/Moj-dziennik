@@ -20,7 +20,7 @@
 <script>
 import Subjects from "@/components/Subjects";
 import PageMenu from "@/components/PageMenu";
-import TitleOfPage from '@/components/TitleOfPage.vue';
+import TitleOfPage from "@/components/TitleOfPage.vue";
 export default {
   name: "ClassPage",
   data: () => ({

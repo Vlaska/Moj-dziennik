@@ -1,24 +1,24 @@
 <template>
   <div>
-    <div class="d-flex justify-center mt-10">
-      <p class="display-2">Statystyki ocen klasy: {{ class_name($route.params.class_name) }} &mdash;
-        {{ subject_codes[$route.params.subject] }}</p>
-
-    </div>
+    <title-of-page>
+      <p class="display-2">Statystyki ocen klasy</p>
+      <p class="display-1">
+        {{ class_name($route.params.class_name) }} &mdash;
+        {{ subject_codes[$route.params.subject] }}
+      </p>
+    </title-of-page>
     <statistics></statistics>
   </div>
 </template>
 
 <script>
 import Statistics from "@/components/Statistics";
+import TitleOfPage from "@/components/TitleOfPage.vue";
 
 export default {
   components: {
-    Statistics
+    Statistics,
+    TitleOfPage
   }
 };
 </script>
-
-<style scoped>
-
-</style>

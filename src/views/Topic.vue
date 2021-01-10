@@ -1,24 +1,24 @@
 <template>
-  <div>
-    <div class="d-flex justify-center mt-10">
-      <p class="display-2">Nowa lekcja klasy: {{ class_name($route.params.class_name) }} &mdash;
-        {{ subject_codes[$route.params.subject] }}</p>
-
-    </div>
+  <v-container>
+    <title-of-page
+      ><p class="display-2">Nowa lekcja klasy</p>
+      <p class="display-1">
+        {{ class_name($route.params.class_name) }} &mdash;
+        {{ subject_codes[$route.params.subject] }}
+      </p></title-of-page
+    >
     <topic></topic>
-  </div>
+  </v-container>
 </template>
 
 <script>
 import Topic from "@/components/Topic";
+import TitleOfPage from '@/components/TitleOfPage.vue';
 
 export default {
   components: {
-    Topic
+    Topic,
+    TitleOfPage
   }
 };
 </script>
-
-<style scoped>
-
-</style>
