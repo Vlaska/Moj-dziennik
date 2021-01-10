@@ -18,13 +18,20 @@
           </v-row>
           <div class="mt-4" v-if="selectedClass !== ''">
             <v-row>
-              <v-autocomplete
-                v-model="selectedStudent"
+              <!-- <v-combobox
+                v-model="filter"
                 :items="studentsData"
                 outlined
                 dense
-                label="Uczeń"
-              ></v-autocomplete>
+                label="Wyszukaj"
+                no-data-text="Brak ucznia pasuącego do wprowadzonej wartości."
+              ></v-combobox> -->
+              <v-text-field
+                v-model="filter"
+                outlined
+                dense
+                label="Wyszukaj"
+              ></v-text-field>
             </v-row>
             <v-row>
               <div class="note-controls">
@@ -41,16 +48,16 @@
                 >
               </div>
               <v-expansion-panels multiple v-model="openedStudents" hover>
-                <v-expansion-panel v-for="i in studentsData" :key="i.value">
+                <v-expansion-panel v-for="i in filterStudents" :key="i.id">
                   <v-expansion-panel-header
                     class="body-1"
                     style="font-size: 20px; font-weight: 500"
                     >{{ i.text }}</v-expansion-panel-header
                   >
                   <v-expansion-panel-content class="body-2">
-                    <template v-if="notes[i.value] && notes[i.value].length">
+                    <template v-if="notes[i.id] && notes[i.id].length">
                       <v-card
-                        v-for="(j, idx) in notes[i.value]"
+                        v-for="(j, idx) in notes[i.id]"
                         :key="i + ',' + idx"
                         color="normal"
                         elevate="0"
@@ -76,7 +83,7 @@
                               color="red"
                               dark
                               @click="removeNote($event)"
-                              :student="i.value"
+                              :student="i.id"
                               :note="idx"
                               >Usuń</v-btn
                             >
@@ -84,7 +91,7 @@
                               color="primary"
                               dark
                               @click="addEditNote($event)"
-                              :student="i.value"
+                              :student="i.id"
                               :note="idx"
                               >Edytuj</v-btn
                             >
@@ -105,7 +112,7 @@
                       <v-btn
                         color="green"
                         dark
-                        :student="i.value"
+                        :student="i.id"
                         @click="addEditNote($event)"
                         >Dodaj nową uwagę</v-btn
                       >
@@ -144,6 +151,7 @@ export default {
     filteredStudents: [],
     openedStudents: [],
     selectedStudent: 0,
+    filter: "",
     notes: {},
     noteTitles: {
       pos: { text: "Uwaga pozytywna", color: "green--text text--darken-1" },
@@ -165,19 +173,38 @@ export default {
       }
 
       this.selectedStudent = [];
-      this.students = require(`../klasy/${this.selectedClass}/${this.selectedClass}.json`);
-      this.studentsData = [];
+      let students = JSON.parse(localStorage.getItem(this.selectedClass));
+      if (!students) {
+        students = require(`../klasy/${this.selectedClass}/${this.selectedClass}.json`);
+        localStorage.setItem(this.selectedClass, JSON.stringify(students));
+      }
+
+      this.students = students;
+      let studentsData = [];
       for (let i of this.students) {
-        this.studentsData.push({
+        studentsData.push({
           text: `${i.first_name} ${i.last_name}`,
-          value: i.id,
-          active: false
+          id: i.id
         });
       }
+      this.studentsData = studentsData;
+      this.filter = "";
       this.notes = require(`../klasy/${this.selectedClass}/uwagi.json`);
-    }
+    },
+    filter: "filterStudents",
+    studentsData: "filterStudents"
   },
   methods: {
+    filterStudents() {
+      if (this.filter.length === 0) {
+        this.filterStudents = this.studentsData;
+        return;
+      }
+      let query = this.filter.toLowerCase();
+      this.filterStudents = this.studentsData.filter((val) =>
+        val.text.toLocaleLowerCase().includes(query)
+      );
+    },
     class_name(val) {
       return class_name(val);
     },
@@ -205,7 +232,10 @@ export default {
     // eslint-disable-next-line no-unused-vars
     addEditNote(event) {},
     // eslint-disable-next-line no-unused-vars
-    removeNote(event) {}
+    removeNote(event) {},
+    filterInput(event) {
+      this.filter = event.srcElement.value;
+    }
   },
   mounted() {
     let initClass = this.$route.params.class_name;

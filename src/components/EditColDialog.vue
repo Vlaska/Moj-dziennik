@@ -14,6 +14,7 @@
               @blur="$v.name.$touch()"
               autocomplete="off"
               :error-messages="nameErrors()"
+              no-data-text="Brak pasującej podpowiedzi."
               :items="suggestions"
             ></v-combobox>
           </v-row>

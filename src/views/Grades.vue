@@ -671,6 +671,7 @@ export default {
       this.show_modal = false;
       this.modal = null;
       this.modal_data = {};
+      this.editing_column = null;
     },
     addNewGradeColumn(data) {
       let grades = Object.assign(this.grades);
