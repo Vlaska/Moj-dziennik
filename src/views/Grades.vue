@@ -169,9 +169,18 @@
         <div style="grid-area: fg">
           <div>
             <v-sheet
-              outlined=""
+              outlined
               elevation="2"
               class="final d-flex justify-center align-center"
+              v-tippy="{
+                onShow: () => {
+                  return !i.final && i.grade !== null;
+                },
+                placement: 'left',
+                arrow: true,
+                appendTo: 'parent'
+              }"
+              content="Jestem oceną wystawioną ołówkiem. Aby wystawić ocenę końcową długopisem, wystaw ponownie tą samą ocenę."
               v-for="(i, idx) in final_grades"
               :key="'final-' + i.id"
               :row="idx"
@@ -220,7 +229,7 @@
         ></selector-menu>
       </v-sheet>
     </v-menu>
-    <v-btn @click="resetData" color="indigo" dark>Zresetuj dane</v-btn>
+    <!-- <v-btn @click="resetData" color="indigo" dark>Zresetuj dane</v-btn> -->
     <div ref="modalContainer">
       <component
         v-if="show_modal"
@@ -663,6 +672,11 @@ export default {
           this.final_grade_alg = weight;
           this.calc_final_grades = calc;
           this.closeModal();
+          this.$emit("notify", {
+            text: "Pomyślnie zapisano zmiany.",
+            color: "green"
+            // btnColor: "green"
+          });
         }.bind(this)
       };
       this.modal = "final-grade-modal";
@@ -684,6 +698,10 @@ export default {
       this.grades = grades.sort((a, b) => {
         return a.name.localeCompare(b.name);
       });
+      this.$emit("notify", {
+        text: "Pomyślnie dodano nową kolumnę",
+        color: "green"
+      });
     },
     saveColumn(data) {
       if (this.editing_column) {
@@ -691,6 +709,10 @@ export default {
         this.editing_column.weight = data.weight;
         this.editing_column.description = data.description;
         this.editing_column = null;
+        this.$emit("notify", {
+          text: "Pomyślnie zapisano zmiany",
+          color: "green"
+        });
       } else {
         this.addNewGradeColumn(data);
       }
@@ -704,11 +726,15 @@ export default {
         this.show_modal = true;
         this.modal_data = {
           active: this.show_modal,
-          onDelete() {
+          onDelete: (() => {
             for (let i of grades) {
               i.grade = null;
             }
-          }
+            this.$emit("notify", {
+              text: "Usunięto oceny z całej kolumny.",
+              color: "red"
+            });
+          }).bind(this)
         };
         this.modal = "delete-all-grades-in-column-modal";
         return;
@@ -717,6 +743,10 @@ export default {
           if (i.grade === null) {
             i.grade = this.current_grade;
           }
+          this.$emit("notify", {
+            text: "Dodano ocenę we wszystkich pustych komórkach.",
+            color: "green"
+          });
         }
       }
     },

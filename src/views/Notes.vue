@@ -304,6 +304,13 @@ export default {
           }
           this.closeModal();
           this.saveNotes();
+          this.$emit("notify", {
+            text: `Dodano ${data.students.length} uwag${
+              data.students.length === 1 ? "ę" : "i"
+            }.`,
+            color: "green"
+            // btnColor: "green"
+          });
         }).bind(this)
       };
       if (!isNaN(studentId)) this.modalData.data.student = studentId;
@@ -323,6 +330,11 @@ export default {
       this.notes[student].splice(note, 1);
       this.closeModal();
       this.saveNotes();
+      this.$emit("notify", {
+        text: "Usunięto uwagę.",
+        color: "red"
+        // btnColor: "green"
+      });
     },
     filterInput(event) {
       this.filter = event.srcElement.value;
@@ -355,9 +367,14 @@ export default {
             date.getMonth() + 1
           )}.${date.getFullYear()}`;
           note.type = data.noteType;
-          this.notes.push(note);
+          this.notes[studentId].push(note);
           this.closeModal();
           this.saveNotes();
+          this.$emit("notify", {
+            text: "Pomyślnie zapisano zmiany.",
+            color: "green"
+            // btnColor: "green"
+          });
         }).bind(this)
       };
       this.modal = "add-edit-note";

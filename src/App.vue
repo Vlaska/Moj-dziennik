@@ -46,13 +46,18 @@
       </div>
     </v-app-bar>
     <v-main>
-      <router-view></router-view>
+      <router-view @notify="showNotification"></router-view>
+      <notification
+        @close-notification="notificationVisible = false"
+        :show="notificationVisible"
+        v-bind="notificationData"
+      />
     </v-main>
   </v-app>
 </template>
 
 <script>
-// import HelloWorld from "./components/HelloWorld";
+import Notification from "./components/Notification";
 require("tippy.js/themes/light.css");
 require("tippy.js/themes/light-border.css");
 require("tippy.js/themes/google.css");
@@ -61,13 +66,15 @@ document.title = "Mój Dziennik";
 export default {
   name: "App",
 
-  // components: {
-  //   HelloWorld
-  // },
+  components: {
+    Notification
+  },
 
   data: () => ({
     path: [],
-    user_logged: false
+    user_logged: false,
+    notificationVisible: false,
+    notificationData: {}
   }),
   watch: {
     "$route.path"() {
@@ -75,6 +82,10 @@ export default {
     }
   },
   methods: {
+    showNotification(data) {
+      this.notificationData = data;
+      this.notificationVisible = true;
+    },
     loggedIn() {
       return this.$store.state.loggedIn;
     },
@@ -119,17 +130,15 @@ export default {
 </script>
 
 <style src="@/assets/css/all.css"></style>
-<style>
-body {
-  font-family: "Roboto Helvetica";
-}
-</style>
 
 <style lang="scss">
 // Odkomentować, jeżeli będą potrzebne ikonki "Material Design"
 // $material-design-icons-font-directory-path: "~material-design-icons-iconfont/dist/fonts/";
 // @import "~material-design-icons-iconfont/src/material-design-icons";
 //
+.tippy-content {
+  font-family: Roboto, Helvetica, Verdena;
+}
 
 a {
   text-decoration: none !important;
