@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container>
     <title-of-page>
       <p class="display-2">Statystyki ocen klasy</p>
       <p class="display-1">
@@ -8,7 +8,7 @@
       </p>
     </title-of-page>
     <statistics></statistics>
-  </div>
+  </v-container>
 </template>
 
 <script>
