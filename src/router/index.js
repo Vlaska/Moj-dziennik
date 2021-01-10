@@ -11,6 +11,9 @@ import ClassPage from "../views/ClassPage.vue";
 import Grades from "../views/Grades.vue";
 import Notes from "../views/Notes.vue";
 import SendMessage from "../views/SendMessage.vue";
+import Statistics from "../views/Statistics.vue";
+import Topic from "../views/Topic.vue";
+
 import {
   class_name,
   subject_codes
@@ -140,6 +143,40 @@ const routes = [{
         },
         {
           name: "Oceny"
+        }
+      ],
+      loginRequired: true
+    }
+  },
+  {
+    path: "/class/:class_name/:subject/statistics",
+    name: "statistics",
+    component: Statistics,
+    meta: {
+      breadCrumbs: [{
+        name: getClassName,
+        link: getClassLink,
+        func: true
+      },
+        {
+          name: "Statystyki"
+        }
+      ],
+      loginRequired: true
+    }
+  },
+  {
+    path: "/class/:class_name/:subject/topic",
+    name: "topic",
+    component: Topic,
+    meta: {
+      breadCrumbs: [{
+        name: getClassName,
+        link: getClassLink,
+        func: true
+      },
+        {
+          name: "Temat"
         }
       ],
       loginRequired: true

@@ -36,8 +36,13 @@ export default {
         image: require("@/assets/icons/png/008-pixels.png")
       },
       {
+        text: "Nowa lekcja",
+        url: { name: "topic" },
+        image: require("@/assets/icons/png/l.png")
+      },
+      {
         text: "Statystyki",
-        url: "#",
+        url: { name: "statistics" },
         image: require("@/assets/icons/png/001-analytics.png")
       },
       {

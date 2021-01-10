@@ -9,9 +9,13 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "chart.js": "^2.9.4",
+    "chartjs": "^0.3.24",
     "core-js": "^3.6.5",
     "jquery": "^3.5.1",
+    "vee-validate": "^3.4.5",
     "vue": "^2.6.11",
+    "vue-chartjs": "^3.5.1",
     "vue-router": "^3.2.0",
     "vue-tippy": "^4.7.2",
     "vuelidate": "^0.7.6",
