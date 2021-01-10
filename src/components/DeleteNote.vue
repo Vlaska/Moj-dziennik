@@ -1,13 +1,11 @@
 <template>
   <v-dialog v-model="active" max-width="400">
     <v-card>
-      <v-card-title class="headline"
-        >Usunąć oceny z całej kolumny?
-      </v-card-title>
+      <v-card-title class="headline">Usunąć uwagę? </v-card-title>
       <v-divider></v-divider>
       <v-card-text>
         <v-container>
-          <p>Czy na pewno chcesz usunąć oceny z całej kolumny?</p>
+          <p>Czy na pewno chcesz tą uwagę?</p>
           <p>Tej akcji nie da się odwrócić.</p>
         </v-container>
       </v-card-text>
@@ -17,7 +15,7 @@
         <v-btn color="secondary" text @click="$emit('close-modal')"
           >Anuluj</v-btn
         >
-        <v-btn color="red" text @click="deleteNote">Usuń</v-btn>
+        <v-btn color="red" text @click="$emit('delete-note', student, note)">Usuń</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -27,13 +25,8 @@
 export default {
   props: {
     active: Boolean,
-    onDelete: { type: Function, required: true }
-  },
-  methods: {
-    deleteNote() {
-      this.$emit("close-modal");
-      this.onDelete();
-    }
+    student: Number,
+    note: Number
   }
 };
 </script>

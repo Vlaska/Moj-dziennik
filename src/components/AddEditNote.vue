@@ -66,7 +66,12 @@
       </v-card-text>
       <v-divider class="mt-n5"></v-divider>
       <v-card-actions>
-        <v-btn color="red" v-if="editMode" dark text @click="deleteNote"
+        <v-btn
+          color="red"
+          v-if="editMode"
+          dark
+          text
+          @click="showDeleteModal = true"
           >Usuń</v-btn
         >
         <v-spacer></v-spacer>
@@ -74,14 +79,21 @@
         <v-btn color="primary" text @click="save">Zapisz</v-btn>
       </v-card-actions>
     </v-card>
+    <delete-note
+      :active="showDeleteModal"
+      @close-modal="showDeleteModal = false"
+      @delete-note="deleteNote"
+    />
   </v-dialog>
 </template>
 
 <script>
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
+import DeleteNote from "@/components/DeleteNote.vue";
 
 export default {
+  components: { DeleteNote },
   mixins: [validationMixin],
   data: () => ({
     noteText: "",
@@ -89,6 +101,7 @@ export default {
     noteIdx: -1,
     is_invalid: false,
     selectedStudents: [],
+    showDeleteModal: false,
     noteTypes: [
       {
         text: "Uwaga pozytywna",
@@ -116,7 +129,8 @@ export default {
   },
   methods: {
     deleteNote() {
-      this.$emit("delete-note");
+      if (!this.editMode) return;
+      this.$emit("delete-note", this.selectedStudents, this.noteIdx);
     },
     close() {
       this.$emit("close-modal");
@@ -167,6 +181,7 @@ export default {
       if (this.data.note) {
         this.noteType = this.data.note.type || "";
         this.noteText = this.data.note.text || "";
+        this.noteIdx = this.data.noteIdx;
       }
     }
   },

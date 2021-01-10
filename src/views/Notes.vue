@@ -85,7 +85,7 @@
                             <v-btn
                               color="red"
                               dark
-                              @click.prevent="removeNote($event)"
+                              @click.prevent="openDeleteModal($event)"
                               :student="i.id"
                               :note="idx"
                               >Usuń</v-btn
@@ -141,6 +141,7 @@
 <script>
 import TitleOfPage from "@/components/TitleOfPage";
 import AddEditNote from "@/components/AddEditNote";
+import DeleteNote from "@/components/DeleteNote";
 import { class_name } from "@/main";
 export default {
   data: () => ({
@@ -176,7 +177,8 @@ export default {
   }),
   components: {
     TitleOfPage,
-    AddEditNote
+    AddEditNote,
+    DeleteNote
   },
   watch: {
     selectedClass() {
@@ -263,7 +265,6 @@ export default {
       }).bind(this);
       tmp();
     },
-    // eslint-disable-next-line no-unused-vars
     dateToNum(d) {
       let t = d.split(".");
       return new Number(t[2] + t[1] + t[0]);
@@ -304,8 +305,20 @@ export default {
       if (!isNaN(studentId)) this.modalData.data.student = studentId;
       this.modal = "add-edit-note";
     },
-    // eslint-disable-next-line no-unused-vars
-    removeNote(event) {},
+    openDeleteModal(event) {
+      this.show_modal = true;
+      let data = this.getSourceElementData(event);
+      this.modalData = {
+        active: true,
+        student: data.studentIdx,
+        note: data.noteIdx
+      }
+      this.modal = "delete-note";
+    },
+    removeNote(student, note) {
+      this.notes[student].splice(note, 1);
+      this.closeModal();
+    },
     filterInput(event) {
       this.filter = event.srcElement.value;
     },
@@ -325,16 +338,19 @@ export default {
         title: "Edytuj uwagę",
         data: {
           student: studentId,
-          note
+          note,
+          noteIdx
         },
         studentsData: this.studentsData,
         onSave: ((data) => {
+          this.notes[studentId].splice(noteIdx, 1);
           note.text = data.noteText;
           let date = new Date();
           note.date = `${this.leadingZero(date.getDate())}.${this.leadingZero(
             date.getMonth() + 1
           )}.${date.getFullYear()}`;
           note.type = data.noteType;
+          this.notes.push(note);
           this.closeModal();
         }).bind(this)
       };
