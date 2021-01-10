@@ -15,6 +15,12 @@
         >
       </v-col>
     </v-form> -->
+    <v-row class="d-flex justify-center">
+      <v-col cols="12" md="6">
+        <p>Na tej stronie znajdują się wiadmości przychodzące/wychodzące.</p>
+        <p>Istnieje również możliwość wysłania nowych wiadomości.</p>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

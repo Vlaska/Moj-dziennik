@@ -6,7 +6,7 @@
           <li>
             <h2>
               <router-link
-                :to="{ name: 'Home' }"
+                :to="{ name: 'mainPage' }"
                 style="color: inherit; text-decoration: inherit"
                 >Mój Dziennik</router-link
               >

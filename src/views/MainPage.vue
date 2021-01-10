@@ -21,7 +21,7 @@ export default {
     pages: [
       {
         text: "Plan zajęć",
-        url: "#",
+        url: { name: "schedule" },
         image: require("@/assets/icons/png/appointment.png")
       },
       {
@@ -36,7 +36,7 @@ export default {
       },
       {
         text: "Ustawienia",
-        url: "#",
+        url: { name: "settings" },
         image: require("@/assets/icons/png/006-settings.png")
       },
       {

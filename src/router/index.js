@@ -13,6 +13,9 @@ import Notes from "../views/Notes.vue";
 import SendMessage from "../views/SendMessage.vue";
 import Statistics from "../views/Statistics.vue";
 import Topic from "../views/Topic.vue";
+import Attendance from "../views/Attendance.vue";
+import Settings from "../views/Settings.vue";
+import Schedule from "../views/Schedule.vue";
 
 import {
   class_name,
@@ -45,8 +48,8 @@ function getClassLink(path) {
 Vue.use(VueRouter);
 
 const routes = [{
-    path: "/",
-    name: "Home",
+    path: "/linki",
+    name: "linki",
     component: Home,
     meta: {
       breadCrumbs: []
@@ -111,7 +114,7 @@ const routes = [{
     }
   },
   {
-    path: "/main",
+    path: "/",
     name: "mainPage",
     component: MainPage,
     meta: {
@@ -154,10 +157,10 @@ const routes = [{
     component: Statistics,
     meta: {
       breadCrumbs: [{
-        name: getClassName,
-        link: getClassLink,
-        func: true
-      },
+          name: getClassName,
+          link: getClassLink,
+          func: true
+        },
         {
           name: "Statystyki"
         }
@@ -171,10 +174,10 @@ const routes = [{
     component: Topic,
     meta: {
       breadCrumbs: [{
-        name: getClassName,
-        link: getClassLink,
-        func: true
-      },
+          name: getClassName,
+          link: getClassLink,
+          func: true
+        },
         {
           name: "Temat"
         }
@@ -201,6 +204,51 @@ const routes = [{
       breadCrumbs: [{
         name: "Wiadomości"
       }],
+      loginRequired: true
+    }
+  },
+  {
+    path: "/class/:class_name/:subject/attendance",
+    name: "attendance",
+    component: Attendance,
+    meta: {
+      breadCrumbs: [{
+          name: getClassName,
+          link: getClassLink,
+          func: true
+        },
+        {
+          name: "Obecności"
+        }
+      ],
+      loginRequired: true
+    }
+  },
+  {
+    path: "/settings",
+    name: "settings",
+    component: Settings,
+    meta: {
+      breadCrumbs: [{
+        name: "Ustawienia"
+      }],
+      loginRequired: true
+    }
+  },
+  {
+    path: "/schedule",
+    name: "schedule",
+    component: Schedule,
+    meta: {
+      breadCrumbs: [{
+          name: getClassName,
+          link: getClassLink,
+          func: true
+        },
+        {
+          name: "Plan zajęć"
+        }
+      ],
       loginRequired: true
     }
   },

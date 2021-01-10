@@ -32,7 +32,7 @@ export default {
       },
       {
         text: "Obecności",
-        url: "#",
+        url: { name: "attendance", params: { class_name: "" } },
         image: require("@/assets/icons/png/008-pixels.png")
       },
       {
@@ -65,8 +65,10 @@ export default {
       return this.$route.params.class_name;
     },
     updateNotePath(class_name) {
-      let t = this.pages.filter((x) => x.text === "Uwagi")[0];
       if (!class_name) class_name = this.getClassName();
+      let t = this.pages.filter((x) => x.text === "Uwagi")[0];
+      t.url.params.class_name = class_name;
+      t = this.pages.filter((x) => x.text === "Obecności")[0];
       t.url.params.class_name = class_name;
     }
   },
