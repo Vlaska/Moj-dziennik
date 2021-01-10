@@ -41,14 +41,14 @@ export default {
         image: require("@/assets/icons/png/l.png")
       },
       {
-        text: "Statystyki",
-        url: { name: "statistics" },
-        image: require("@/assets/icons/png/001-analytics.png")
-      },
-      {
         text: "Uwagi",
         url: { name: "notes", params: { class_name: "" } },
         image: require("@/assets/icons/png/004-exclamation-mark.png")
+      },
+      {
+        text: "Statystyki",
+        url: { name: "statistics" },
+        image: require("@/assets/icons/png/001-analytics.png")
       },
       {
         text: "Powrót",

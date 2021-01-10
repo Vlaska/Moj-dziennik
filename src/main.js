@@ -26,7 +26,10 @@ export const subject_codes = {
 
 Vue.mixin({
   methods: {
-    class_name
+    class_name,
+    leadingZero(v) {
+      return v < 10 ? "0" + v : v;
+    }
   },
   data: () => ({
     subject_codes

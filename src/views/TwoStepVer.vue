@@ -99,9 +99,6 @@ export default {
 
       return code;
     },
-    leadingZero(v) {
-      return v < 10 ? "0" + v : v;
-    },
     submit() {
       this.$v.code.$touch();
       if (this.$v.$invalid) {

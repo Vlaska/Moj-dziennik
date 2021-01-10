@@ -43,12 +43,15 @@
                     >Ukryj wszystkie uwagi</v-btn
                   >
                 </div>
-                <v-btn color="green" dark @click="addEditNote($event)"
+                <v-btn
+                  color="green"
+                  dark
+                  @click.prevent="openAddNoteModal($event)"
                   >Dodaj nową uwagę</v-btn
                 >
               </div>
               <v-expansion-panels multiple v-model="openedStudents" hover>
-                <v-expansion-panel v-for="i in filterStudents" :key="i.id">
+                <v-expansion-panel v-for="i in filteredStudents" :key="i.id">
                   <v-expansion-panel-header
                     class="body-1"
                     style="font-size: 20px; font-weight: 500"
@@ -82,7 +85,7 @@
                             <v-btn
                               color="red"
                               dark
-                              @click="removeNote($event)"
+                              @click.prevent="removeNote($event)"
                               :student="i.id"
                               :note="idx"
                               >Usuń</v-btn
@@ -90,7 +93,7 @@
                             <v-btn
                               color="primary"
                               dark
-                              @click="addEditNote($event)"
+                              @click.prevent="openEditNoteModal"
                               :student="i.id"
                               :note="idx"
                               >Edytuj</v-btn
@@ -113,7 +116,7 @@
                         color="green"
                         dark
                         :student="i.id"
-                        @click="addEditNote($event)"
+                        @click.prevent="openAddNoteModal($event)"
                         >Dodaj nową uwagę</v-btn
                       >
                     </div>
@@ -123,6 +126,13 @@
             </v-row>
           </div>
         </v-col>
+        <component
+          v-if="show_modal"
+          :is="modal"
+          v-bind="modalData"
+          @close-modal="closeModal"
+          @delete-note="removeNote"
+        />
       </v-container>
     </v-row>
   </v-container>
@@ -130,6 +140,7 @@
 
 <script>
 import TitleOfPage from "@/components/TitleOfPage";
+import AddEditNote from "@/components/AddEditNote";
 import { class_name } from "@/main";
 export default {
   data: () => ({
@@ -158,10 +169,14 @@ export default {
       note: { text: "Notatka", color: "grey--text text--darken-4" },
       neg: { text: "Uwaga negatywna", color: "red--text text--darken-4" }
     },
-    openningAll: false
+    openningAll: false,
+    modal: "",
+    modalData: {},
+    show_modal: false
   }),
   components: {
-    TitleOfPage
+    TitleOfPage,
+    AddEditNote
   },
   watch: {
     selectedClass() {
@@ -187,6 +202,7 @@ export default {
           id: i.id
         });
       }
+      this.openedStudents = [];
       this.studentsData = studentsData;
       this.filter = "";
       this.notes = require(`../klasy/${this.selectedClass}/uwagi.json`);
@@ -195,13 +211,20 @@ export default {
     studentsData: "filterStudents"
   },
   methods: {
+    getSourceElementData(event) {
+      let t = event.currentTarget;
+      return {
+        studentIdx: parseInt(t.getAttribute("student")),
+        noteIdx: parseInt(t.getAttribute("note"))
+      };
+    },
     filterStudents() {
       if (this.filter.length === 0) {
-        this.filterStudents = this.studentsData;
+        this.filteredStudents = this.studentsData;
         return;
       }
       let query = this.filter.toLowerCase();
-      this.filterStudents = this.studentsData.filter((val) =>
+      this.filteredStudents = this.studentsData.filter((val) =>
         val.name.toLocaleLowerCase().includes(query)
       );
     },
@@ -230,11 +253,81 @@ export default {
       tmp();
     },
     // eslint-disable-next-line no-unused-vars
-    addEditNote(event) {},
+    dateToNum(d) {
+      let t = d.split(".");
+      return new Number(t[2] + t[1] + t[0]);
+    },
+    openAddNoteModal(event) {
+      this.show_modal = true;
+      let data = this.getSourceElementData(event);
+      let studentId = data.studentIdx;
+
+      this.modalData = {
+        editMode: false,
+        title: "Dodaj nową uwagę",
+        studentsData: this.studentsData,
+        data: {},
+        onSave: ((data) => {
+          let date = new Date();
+          let creationDate = `${this.leadingZero(
+            date.getDate()
+          )}.${this.leadingZero(date.getMonth() + 1)}.${date.getFullYear()}`;
+
+          for (let i of data.students) {
+            let note = {
+              text: data.noteText,
+              type: data.noteType,
+              author: "Jan Kowalski",
+              date: creationDate
+            };
+            let studentsNotes = this.notes[i];
+            if (Array.isArray(studentsNotes)) {
+              studentsNotes.push(note);
+            } else {
+              this.notes[i] = [note];
+            }
+          }
+          this.closeModal();
+        }).bind(this)
+      };
+      if (!isNaN(studentId)) this.modalData.data.student = studentId;
+      this.modal = "add-edit-note";
+    },
     // eslint-disable-next-line no-unused-vars
     removeNote(event) {},
     filterInput(event) {
       this.filter = event.srcElement.value;
+    },
+    closeModal() {
+      this.modal = "";
+      this.modalData = {};
+    },
+    openEditNoteModal(event) {
+      this.show_modal = true;
+      let data = this.getSourceElementData(event);
+      let studentId = data.studentIdx;
+      let noteIdx = data.noteIdx;
+      let note = this.notes[studentId][noteIdx];
+
+      this.modalData = {
+        editMode: true,
+        title: "Edytuj uwagę",
+        data: {
+          student: studentId,
+          note
+        },
+        studentsData: this.studentsData,
+        onSave: ((data) => {
+          note.text = data.noteText;
+          let date = new Date();
+          note.date = `${this.leadingZero(date.getDate())}.${this.leadingZero(
+            date.getMonth() + 1
+          )}.${date.getFullYear()}`;
+          note.type = data.noteType;
+          this.closeModal();
+        }).bind(this)
+      };
+      this.modal = "add-edit-note";
     }
   },
   mounted() {
