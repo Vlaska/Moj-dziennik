@@ -3,7 +3,7 @@
     <title-of-page title="Uwagi" />
 
     <v-row class="d-flex justify-center">
-      <v-container fluid class="d-flex justify-center my-2 py-0">
+      <v-container fluid class="d-flex justify-center mb-2 mt-4 py-0">
         <v-col cols="12" sm="8">
           <v-row>
             <v-select
@@ -12,9 +12,11 @@
               outlined
               dense
               label="Klasa"
+              hint="Wybierz klasę, dla której chcesz przeglądać uwagi."
+              persistent-hint
             ></v-select>
           </v-row>
-          <div v-if="selectedClass !== ''">
+          <div class="mt-4" v-if="selectedClass !== ''">
             <v-row>
               <v-autocomplete
                 v-model="selectedStudent"
@@ -25,15 +27,18 @@
               ></v-autocomplete>
             </v-row>
             <v-row>
-              <div class="visibility-note-controls">
-                <v-btn @click="all" color="indigo" dark
-                  >Pokaż wszystkie uwagi</v-btn
-                >
-                <v-btn @click="none" color="indigo" dark
-                  >Ukryj wszystkie uwagi</v-btn
-                >
+              <div class="note-controls">
+                <div class="visibility-note-controls">
+                  <v-btn @click="all" color="indigo" dark
+                    >Pokaż wszystkie uwagi</v-btn
+                  >
+                  <v-btn @click="none" color="indigo" dark
+                    >Ukryj wszystkie uwagi</v-btn
+                  >
+                </div>
+                <v-btn color="green" dark>Dodaj nową uwagę</v-btn>
               </div>
-              <v-expansion-panels multiple v-model="openedStudents">
+              <v-expansion-panels multiple v-model="openedStudents" hover>
                 <v-expansion-panel v-for="i in studentsData" :key="i.value">
                   <v-expansion-panel-header
                     class="body-1"
@@ -118,7 +123,8 @@ export default {
       pos: { text: "Uwaga pozytywna", color: "green--text text--darken-1" },
       note: { text: "Notatka", color: "grey--text text--darken-4" },
       neg: { text: "Uwaga negatywna", color: "red--text text--darken-4" }
-    }
+    },
+    openningAll: false
   }),
   components: {
     TitleOfPage
@@ -148,6 +154,28 @@ export default {
   methods: {
     class_name(val) {
       return class_name(val);
+    },
+    all() {
+      this.openningAll = true;
+      let tmp = ((next, stop) => {
+        if (next >= stop) this.openningAll = false;
+        if (!this.openningAll) return;
+        this.openedStudents.push(next);
+        setTimeout(() => tmp(next + 1, stop), 100);
+      }).bind(this);
+      tmp(0, this.studentsData.length);
+    },
+    none() {
+      this.openningAll = false;
+      this.openedStudents.sort();
+      this.openedStudents.reverse();
+      let tmp = (() => {
+        if (this.openedStudents.length === 0) return;
+        if (this.openningAll) this.openningAll = false;
+        this.openedStudents.pop();
+        setTimeout(tmp, 5);
+      }).bind(this);
+      tmp();
     }
   },
   mounted() {
@@ -165,12 +193,17 @@ export default {
   font-weight: 400 !important;
 }
 
+.note-controls {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+
 .visibility-note-controls {
   display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  margin-bottom: 15px;
-  margin-top: 5px;
+  justify-content: flex-start;
 
   & > *:not(:last-child) {
     margin-right: 10px;
