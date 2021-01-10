@@ -216,14 +216,17 @@ export default {
     notes: {
       deep: true,
       handler() {
-        localStorage.setItem(
-          `${this.selectedClass}-notes`,
-          JSON.stringify(this.notes)
-        );
+        this.saveNotes();
       }
     }
   },
   methods: {
+    saveNotes() {
+      localStorage.setItem(
+        `${this.selectedClass}-notes`,
+        JSON.stringify(this.notes)
+      );
+    },
     getSourceElementData(event) {
       let t = event.currentTarget;
       return {
@@ -300,6 +303,7 @@ export default {
             }
           }
           this.closeModal();
+          this.saveNotes();
         }).bind(this)
       };
       if (!isNaN(studentId)) this.modalData.data.student = studentId;
@@ -312,12 +316,13 @@ export default {
         active: true,
         student: data.studentIdx,
         note: data.noteIdx
-      }
+      };
       this.modal = "delete-note";
     },
     removeNote(student, note) {
       this.notes[student].splice(note, 1);
       this.closeModal();
+      this.saveNotes();
     },
     filterInput(event) {
       this.filter = event.srcElement.value;
@@ -352,6 +357,7 @@ export default {
           note.type = data.noteType;
           this.notes.push(note);
           this.closeModal();
+          this.saveNotes();
         }).bind(this)
       };
       this.modal = "add-edit-note";
