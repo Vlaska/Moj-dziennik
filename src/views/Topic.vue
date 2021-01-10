@@ -13,7 +13,7 @@
 
 <script>
 import Topic from "@/components/Topic";
-import TitleOfPage from '@/components/TitleOfPage.vue';
+import TitleOfPage from "@/components/TitleOfPage.vue";
 
 export default {
   components: {

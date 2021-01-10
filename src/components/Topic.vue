@@ -6,39 +6,38 @@
       <v-form @submit.prevent="submit" class="d-flex justify-center">
         <v-col cols="12" sm="8">
           <v-row>
-            <v-layout row wrap>
-              <v-menu
-                v-model="fromDateMenu"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                lazy
-                transition="scale-transition"
-                offset-y
-                full-width
-                max-width="290px"
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    label="Podaj datę zajęć"
-                    prepend-icon="mdi-calendar"
-                    readonly
-                    outlined
-                    :value="fromDateDisp"
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  locale="en-in"
-                  :min="minDate"
-                  :max="maxDate"
-                  v-model="fromDateVal"
-                  no-title
-                  @input="fromDateMenu = false"
-                  :allowed-dates="allowedDates"
-                ></v-date-picker>
-              </v-menu>
-            </v-layout>
+            <v-menu
+              v-model="fromDateMenu"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              lazy
+              transition="scale-transition"
+              offset-y
+              width="100%"
+              max-width="290px"
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  label="Podaj datę zajęć"
+                  prepend-icon="mdi-calendar"
+                  readonly
+                  outlined
+                  :value="fromDateDisp"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                locale="pl-pl"
+                first-day-of-week="1"
+                :min="minDate"
+                :max="maxDate"
+                v-model="fromDateVal"
+                no-title
+                @input="fromDateMenu = false"
+                :allowed-dates="allowedDates"
+              ></v-date-picker>
+            </v-menu>
           </v-row>
           <validation-provider v-slot="{ errors }" name="Name" rules="required">
             <v-row>
@@ -82,8 +81,8 @@
             </v-row>
           </validation-provider>
           <v-row class="d-flex justify-end pt-4">
-            <v-btn color="type===primary" @click="submit" :disabled="invalid"
-              >Zaloguj</v-btn
+            <v-btn color="primary" @click="submit" :disabled="invalid"
+              >Zapisz</v-btn
             ></v-row
           >
         </v-col>
@@ -194,6 +193,10 @@ export default {
 
     submit() {
       this.$refs.observer.validate();
+      this.$emit("notify", {
+        text: "Pomyślnie zapisano nowy temat lekcji.",
+        color: "green"
+      });
       this.$router.push({ name: "classPage" });
     }
   },
